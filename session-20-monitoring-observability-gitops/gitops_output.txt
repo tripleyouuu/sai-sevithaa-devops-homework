@@ -1,0 +1,54 @@
+$ kubectl apply -f 07-argocd/app/argocd-application.yaml
+application.argoproj.io/session20-app created
+
+$ kubectl get application -n argocd
+NAME            SYNC STATUS   HEALTH STATUS
+session20-app   Synced        Healthy
+$ kubectl get all -n session20
+NAME                                        READY   STATUS    RESTARTS   AGE
+pod/session20-gitops-app-679fcbbd85-545kn   1/1     Running   0          13s
+pod/session20-gitops-app-679fcbbd85-64dgw   1/1     Running   0          13s
+pod/session20-gitops-app-679fcbbd85-68pln   1/1     Running   0          13s
+pod/session20-gitops-app-679fcbbd85-dsdfk   1/1     Running   0          13s
+pod/session20-gitops-app-679fcbbd85-nfwss   1/1     Running   0          13s
+
+NAME                           TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+service/session20-gitops-app   ClusterIP   10.104.182.86   <none>        80/TCP    13s
+
+NAME                                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/session20-gitops-app   5/5     5            5           13s
+
+NAME                                              DESIRED   CURRENT   READY   AGE
+replicaset.apps/session20-gitops-app-679fcbbd85   5         5         5       13s
+
+$ kubectl describe application session20-app -n argocd | head -30
+Name:         session20-app
+Namespace:    argocd
+Labels:       <none>
+Annotations:  argocd.argoproj.io/tracking-id: session20-app:argoproj.io/Application:argocd/session20-app
+API Version:  argoproj.io/v1alpha1
+Kind:         Application
+Metadata:
+  Creation Timestamp:  2026-10-07T15:51:49Z
+  Generation:          10
+  Resource Version:    12518
+  UID:                 116339ea-f1d2-43cc-8c35-33c9003fbe34
+Spec:
+  Destination:
+    Namespace:  session20
+    Server:     https://kubernetes.default.svc
+  Project:      default
+  Source:
+    Path:             app
+    Repo URL:         https://github.com/Nency-Ravaliya/gitops-demo.git
+    Target Revision:  main
+  Sync Policy:
+    Automated:
+      Prune:      true
+      Self Heal:  true
+    Sync Options:
+      CreateNamespace=true
+Status:
+  Controller Namespace:  argocd
+  Health:
+    Last Transition Time:  2026-10-07T15:51:53Z
