@@ -1,0 +1,65 @@
+=== helm get ===
+$ helm get values demo-release
+USER-SUPPLIED VALUES:
+null
+
+$ helm get manifest demo-release | head -20
+---
+# Source: demo-chart/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: demo-release-demo-chart
+  labels:
+    helm.sh/chart: demo-chart-0.1.1
+    app.kubernetes.io/name: demo-chart
+    app.kubernetes.io/instance: demo-release
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+automountServiceAccountToken: true
+
+---
+# Source: demo-chart/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-release-demo-chart
+
+=== helm upgrade ===
+$ helm upgrade demo-release ./demo-chart --set replicaCount=2
+Release "demo-release" has been upgraded. Happy Helming!
+NAME: demo-release
+LAST DEPLOYED: Wed Oct  7 23:19:40 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 2
+DESCRIPTION: Upgrade complete
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=demo-chart,app.kubernetes.io/instance=demo-release" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace default $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace default port-forward $POD_NAME 8080:$CONTAINER_PORT
+
+$ helm get values demo-release
+USER-SUPPLIED VALUES:
+replicaCount: 2
+
+=== helm history ===
+$ helm history demo-release
+REVISION	UPDATED                 	STATUS    	CHART           	APP VERSION	DESCRIPTION     
+1       	Wed Oct  7 23:19:27 2026	superseded	demo-chart-0.1.1	1.16.0     	Install complete
+2       	Wed Oct  7 23:19:40 2026	deployed  	demo-chart-0.1.1	1.16.0     	Upgrade complete
+
+=== helm uninstall / repo / search (non-destructive demos) ===
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+"bitnami" has been added to your repositories
+$ helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "bitnami" chart repository
+Update Complete. ⎈Happy Helming!⎈
+$ helm search repo bitnami/nginx
+NAME                            	CHART VERSION	APP VERSION	DESCRIPTION                                       
+bitnami/nginx                   	25.2.1       	1.31.6     	NGINX Open Source is a web server that can be a...
+bitnami/nginx-ingress-controller	12.0.7       	1.13.1     	NGINX Ingress Controller is an Ingress controll...
+bitnami/nginx-intel             	2.1.15       	0.4.9      	DEPRECATED NGINX Open Source for Intel is a lig...

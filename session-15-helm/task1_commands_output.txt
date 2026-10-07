@@ -1,0 +1,60 @@
+=== helm create (already scaffolded in demo-chart/, structure shown here) ===
+$ helm create scratch-chart && ls scratch-chart
+Creating /tmp/scratch-chart
+Chart.yaml
+charts
+templates
+values.yaml
+
+=== helm install ===
+$ helm install demo-release ./demo-chart
+NAME: demo-release
+LAST DEPLOYED: Wed Oct  7 23:19:27 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=demo-chart,app.kubernetes.io/instance=demo-release" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace default $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace default port-forward $POD_NAME 8080:$CONTAINER_PORT
+
+=== helm list ===
+$ helm list
+NAME        	NAMESPACE	REVISION	UPDATED                              	STATUS  	CHART           	APP VERSION
+demo-release	default  	1       	2026-10-07 23:19:27.241771 +0800 WITA	deployed	demo-chart-0.1.1	1.16.0     
+
+=== helm status ===
+$ helm status demo-release
+NAME: demo-release
+LAST DEPLOYED: Wed Oct  7 23:19:27 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+RESOURCES:
+==> v1/Pod(related)
+NAME                                       READY   STATUS              RESTARTS   AGE
+demo-release-demo-chart-5f75979fb9-tb55s   0/1     ContainerCreating   0          5s
+
+==> v1/ServiceAccount
+NAME                      AGE
+demo-release-demo-chart   5s
+
+==> v1/Service
+NAME                      TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)   AGE
+demo-release-demo-chart   ClusterIP   10.98.55.91   <none>        80/TCP    5s
+
+==> v1/Deployment
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+demo-release-demo-chart   0/1     1            0           5s
+
+
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=demo-chart,app.kubernetes.io/instance=demo-release" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace default $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace default port-forward $POD_NAME 8080:$CONTAINER_PORT

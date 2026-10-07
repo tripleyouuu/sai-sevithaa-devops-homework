@@ -1,0 +1,44 @@
+$ helm install notes-app ./notes-chart
+NAME: notes-app
+LAST DEPLOYED: Wed Oct  7 23:20:51 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+
+$ helm list
+NAME     	NAMESPACE	REVISION	UPDATED                              	STATUS  	CHART            	APP VERSION
+notes-app	default  	1       	2026-10-07 23:20:51.506811 +0800 WITA	deployed	notes-chart-0.1.0	1.0        
+
+$ kubectl get deployment,configmap -l app=notes-app 2>&1 || kubectl get all
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/notes-app-deploy   0/1     1            0           6s
+
+NAME                                    READY   STATUS              RESTARTS   AGE
+pod/notes-app-deploy-5bb6c9b94c-thkj2   0/1     ContainerCreating   0          6s
+
+NAME                         DATA   AGE
+configmap/kube-root-ca.crt   1      86m
+configmap/notes-app-config   2      6s
+
+$ kubectl get deployment -o jsonpath='{.items[0].spec.template.spec.containers[0].image}{"
+"}'
+nginx:1.24
+
+--- upgrade to production values ---
+$ helm upgrade notes-app ./notes-chart -f notes-chart/values-prod.yaml
+Release "notes-app" has been upgraded. Happy Helming!
+NAME: notes-app
+LAST DEPLOYED: Wed Oct  7 23:20:57 2026
+NAMESPACE: default
+STATUS: deployed
+REVISION: 2
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+
+$ kubectl get deployment -o jsonpath='{.items[0].spec.replicas}{"
+"}{.items[0].spec.template.spec.containers[0].image}{"
+"}'
+3
+nginx:1.25
