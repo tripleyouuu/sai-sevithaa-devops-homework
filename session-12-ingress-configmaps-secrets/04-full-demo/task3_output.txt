@@ -1,0 +1,59 @@
+$ kubectl apply -f configmap.yaml -f secret.yaml -f backend.yaml -f frontend.yaml -f ingress.yaml
+configmap/yatri-app-config created
+secret/yatri-db-secret created
+deployment.apps/yatri-backend created
+service/yatri-backend-service created
+deployment.apps/yatri-frontend created
+service/yatri-frontend-service created
+ingress.networking.k8s.io/yatri-ingress created
+$ kubectl get pods
+NAME                             READY   STATUS    RESTARTS   AGE
+yatri-backend-6c58cb99c7-fmvzp   1/1     Running   0          18s
+yatri-backend-6c58cb99c7-hswbb   1/1     Running   0          18s
+yatri-frontend-ddcfc4b5f-8n6k4   1/1     Running   0          18s
+yatri-frontend-ddcfc4b5f-h424s   1/1     Running   0          18s
+
+$ kubectl get ingress yatri-ingress
+NAME            CLASS   HOSTS         ADDRESS   PORTS   AGE
+yatri-ingress   nginx   yatri.local             80      17s
+
+$ kubectl get pods -n ingress-nginx
+NAME                                       READY   STATUS      RESTARTS   AGE
+ingress-nginx-admission-create-9hqjd       0/1     Completed   0          58s
+ingress-nginx-admission-patch-zr5jb        0/1     Completed   0          58s
+ingress-nginx-controller-d7cd8c989-6rhdh   1/1     Running     0          58s
+$ kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 8100:80
+
+$ curl -s -H 'Host: yatri.local' http://localhost:8100/
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+
+$ curl -s -H 'Host: yatri.local' http://localhost:8100/api/
+Yatri Backend API
+=================
+ENVIRONMENT     : production
+LOG_LEVEL       : INFO
+DEFAULT_CURRENCY: INR
+POSTGRES_USER   : yatri_admin
+POSTGRES_DB     : yatri_production_db

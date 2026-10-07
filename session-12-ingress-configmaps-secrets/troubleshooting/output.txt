@@ -1,0 +1,18 @@
+=== Reproducing the trailing-newline Secret bug ===
+
+$ echo "mypassword" | base64
+bXlwYXNzd29yZAo=
+
+$ echo "mypassword" | base64 | base64 -d | xxd | tail -2
+00000000: 6d79 7061 7373 776f 7264 0a              mypassword.
+
+--- BUG: trailing 0a (newline) byte included, password is 'mypassword
+' not 'mypassword' ---
+
+$ echo -n "mypassword" | base64
+bXlwYXNzd29yZA==
+
+$ echo -n "mypassword" | base64 | base64 -d | xxd | tail -2
+00000000: 6d79 7061 7373 776f 7264                 mypassword
+
+--- FIX: -n suppresses the newline, password is exactly 'mypassword' (10 bytes, no 0a) ---

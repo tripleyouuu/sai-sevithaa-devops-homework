@@ -1,0 +1,55 @@
+$ kubectl apply -f 01-configmap/app-config.yaml -f 02-secret/db-secret.yaml -f app/backend-with-config.yaml
+configmap/yatri-app-config created
+secret/yatri-db-secret created
+deployment.apps/yatri-backend created
+
+$ kubectl get configmap yatri-app-config -o yaml
+apiVersion: v1
+data:
+  DEFAULT_CURRENCY: INR
+  ENVIRONMENT: production
+  LOG_LEVEL: INFO
+  MAX_BOOKING_DAYS: "30"
+  PORT: "5000"
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"DEFAULT_CURRENCY":"INR","ENVIRONMENT":"production","LOG_LEVEL":"INFO","MAX_BOOKING_DAYS":"30","PORT":"5000"},"kind":"ConfigMap","metadata":{"annotations":{},"labels":{"app":"yatri-backend"},"name":"yatri-app-config","namespace":"default"}}
+  creationTimestamp: "2026-10-07T14:49:18Z"
+  labels:
+    app: yatri-backend
+  name: yatri-app-config
+  namespace: default
+  resourceVersion: "5935"
+  uid: 4f094fae-1cda-4ec6-bd8b-aee4e2b076c3
+
+$ kubectl get secret yatri-db-secret -o yaml
+apiVersion: v1
+data:
+  POSTGRES_DB: eWF0cmlfcHJvZHVjdGlvbl9kYg==
+  POSTGRES_PASSWORD: c2VjcmV0cGFzc3dvcmQ=
+  POSTGRES_USER: eWF0cmlfYWRtaW4=
+kind: Secret
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"POSTGRES_DB":"eWF0cmlfcHJvZHVjdGlvbl9kYg==","POSTGRES_PASSWORD":"c2VjcmV0cGFzc3dvcmQ=","POSTGRES_USER":"eWF0cmlfYWRtaW4="},"kind":"Secret","metadata":{"annotations":{},"labels":{"app":"yatri-backend"},"name":"yatri-db-secret","namespace":"default"},"type":"Opaque"}
+  creationTimestamp: "2026-10-07T14:49:18Z"
+  labels:
+    app: yatri-backend
+  name: yatri-db-secret
+  namespace: default
+  resourceVersion: "5936"
+  uid: d27cf3f9-49c2-4d9a-b8b3-d93402ee377e
+type: Opaque
+
+$ kubectl logs -l app=yatri-backend --tail=5
+
+$ kubectl exec deploy/yatri-backend -- env | grep -E 'ENVIRONMENT|LOG_LEVEL|POSTGRES'
+POSTGRES_DB=yatri_production_db
+POSTGRES_PASSWORD=secretpassword
+POSTGRES_USER=yatri_admin
+ENVIRONMENT=production
+LOG_LEVEL=INFO
+$ kubectl logs yatri-backend-679fbcd789-g9xq4
