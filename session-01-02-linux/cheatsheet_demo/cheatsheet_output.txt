@@ -1,0 +1,41 @@
+$ pwd
+/Users/vitha/Desktop/sai-sevithaa-devops-homework/session-01-02-linux/cheatsheet_demo
+$ mkdir demo_dir
+$ cp link_demo_output.txt demo_dir/ 2>/dev/null || echo 'sample' > demo_dir/sample.txt
+$ mv demo_dir/sample.txt demo_dir/renamed.txt
+$ chmod 644 demo_dir/renamed.txt
+$ ls -l demo_dir
+total 8
+-rw-r--r--@ 1 vitha  staff  7 Oct  7 21:07 renamed.txt
+
+$ grep -r 'sample' demo_dir || echo 'content was renamed, not found'
+demo_dir/renamed.txt:sample
+$ echo 'target text' >> demo_dir/renamed.txt && grep 'target' demo_dir/renamed.txt
+target text
+
+$ find . -name '*.txt'
+./cheatsheet_output.txt
+./demo_dir/renamed.txt
+
+$ df -h | head -3
+Filesystem        Size    Used   Avail Capacity iused ifree %iused  Mounted on
+/dev/disk3s1s1   926Gi    12Gi   594Gi     2%    459k  4.3G    0%   /
+devfs            203Ki   203Ki     0Bi   100%     703     0  100%   /dev
+
+$ du -sh demo_dir
+4.0K	demo_dir
+
+$ ps aux | head -3
+USER               PID  %CPU %MEM      VSZ    RSS   TT  STAT STARTED      TIME COMMAND
+root              1142  92.9  2.9 435707792 733808   ??  Rs   11:35AM   2:28.17 /System/Library/PrivateFrameworks/PackageKit.framework/Resources/system_installd
+vitha             1597  55.1  2.9 1721559568 737424   ??  S    11:39AM   8:21.29 /Applications/Miro.app/Contents/Frameworks/Miro Helper (Renderer).app/Contents/MacOS/Miro Helper (Renderer) --type=renderer --user-data-dir=/Users/vitha/Library/Application Support/RealtimeBoard --secure-schemes=sentry-ipc --bypasscsp-schemes=sentry-ipc --cors-schemes=sentry-ipc --fetch-schemes=sentry-ipc --app-path=/Applications/Miro.app/Contents/Resources/app.asar --no-sandbox --no-zygote --enable-blink-features --disable-blink-features --touch-events=auto --lang=en-US --num-raster-threads=4 --enable-zero-copy --enable-gpu-memory-buffer-compositor-resources --enable-main-frame-before-activation --renderer-client-id=11 --time-ticks-at-unix-epoch=-1791344110594876 --launch-time-ticks=283608451 --shared-files --field-trial-handle=1718379636,r,5792074656128361699,11923666854832404144,262144 --enable-features=DocumentPolicyIncludeJSCallStacksInCrashReports,PdfUseShowSaveFilePicker,ScreenCaptureKitPickerScreen,ScreenCaptureKitStreamPickerSonoma --disable-features=MacWebContentsOcclusion,ScreenAIOCREnabled,SpareRendererForSitePerProcess,TimeoutHangingVideoCaptureStarts,TraceSiteInstanceGetProcessCreation --variations-seed-version
+
+$ tar -czf demo.tar.gz demo_dir
+$ tar -tzf demo.tar.gz
+demo_dir/
+demo_dir/renamed.txt
+
+$ curl -sI https://example.com | head -3
+HTTP/2 200 
+date: Wed, 07 Oct 2026 13:07:46 GMT
+content-type: text/html; charset=utf-8

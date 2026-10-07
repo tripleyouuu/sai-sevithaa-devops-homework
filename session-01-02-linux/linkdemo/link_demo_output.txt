@@ -1,0 +1,25 @@
+$ echo 'hello world' > original.txt
+$ ln -s original.txt softlink.txt
+$ ln original.txt hardlink.txt
+
+$ ls -li original.txt softlink.txt hardlink.txt
+23111329 -rw-r--r--@ 2 vitha  staff  12 Oct  7 21:07 hardlink.txt
+23111329 -rw-r--r--@ 2 vitha  staff  12 Oct  7 21:07 original.txt
+23111342 lrwxr-xr-x@ 1 vitha  staff  12 Oct  7 21:07 softlink.txt -> original.txt
+
+$ cat softlink.txt
+hello world
+$ cat hardlink.txt
+hello world
+
+$ rm original.txt
+
+$ cat softlink.txt   (broken, target gone)
+cat: softlink.txt: No such file or directory
+
+$ cat hardlink.txt   (still works, data survives)
+hello world
+
+$ ls -li softlink.txt hardlink.txt
+23111329 -rw-r--r--@ 1 vitha  staff  12 Oct  7 21:07 hardlink.txt
+23111342 lrwxr-xr-x@ 1 vitha  staff  12 Oct  7 21:07 softlink.txt -> original.txt
