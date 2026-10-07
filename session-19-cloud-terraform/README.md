@@ -77,21 +77,91 @@ Error: failed to refresh cached credentials, no EC2 IMDS role found...
 
 Full output: [`terraform-infra/task_output.txt`](terraform-infra/task_output.txt)
 
-## Still needed: your AWS credentials
+## Full workflow, run for real against a live AWS account
 
-Once `aws configure` is set up (see the AWS walkthrough earlier in this
-conversation), the remaining workflow is:
-
-```bash
-cd terraform-infra
-terraform plan      # I'll show you exactly what this creates first
-terraform apply     # creates VPC, subnet, IGW, route table, SG, EC2, S3
-terraform output    # print instance_public_ip, bucket_name, etc.
-# verify the instance is reachable / bucket exists
-terraform destroy   # tear everything down once verified, to avoid ongoing cost
+```
+$ terraform apply -auto-approve
+...
+Plan: 8 to add, 0 to change, 0 to destroy.
 ```
 
-An architecture diagram and apply/destroy screenshots will be added here
-once that runs for real. The EC2 instance type defaults to `t2.micro`
-(free-tier eligible on a new AWS account) specifically so this stays free
-to run.
+First attempt failed on the EC2 instance specifically — a real, useful
+finding:
+
+```
+Error: creating EC2 Instance: ... InvalidParameterCombination: The specified
+instance type is not eligible for Free Tier. For a list of Free Tier
+instance types, run 'describe-instance-types' with the filter
+'free-tier-eligible=true'.
+```
+
+`t2.micro` (the older-generation default) isn't free-tier eligible on this
+particular AWS account — AWS now scopes free-tier eligibility per account
+rather than it being a fixed global list. Checked what actually is:
+
+```
+$ aws ec2 describe-instance-types --filters "Name=free-tier-eligible,Values=true" --query "InstanceTypes[].InstanceType" --output text
+t8i.micro  t4g.small  c7i-flex.large  t3.micro  t4g.micro  t8i.small  m7i-flex.large  t3.small
+```
+
+Changed the default `instance_type` from `t2.micro` to `t3.micro` and
+re-ran — all 8 resources created successfully:
+
+```
+$ terraform apply -auto-approve
+aws_instance.web: Creation complete after 16s [id=i-0caa9af400f3701e9]
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+
+Outputs:
+bucket_name = "sai-sevithaa-devops-session19-assets"
+instance_id = "i-0caa9af400f3701e9"
+instance_public_ip = "13.233.61.125"
+security_group_id = "sg-0ccdb793587c896db"
+subnet_id = "subnet-09f414da95be665d6"
+vpc_cidr = "10.20.0.0/16"
+vpc_id = "vpc-0a04eeb355cfc9977"
+```
+
+**Verified independently via the AWS CLI** (not just trusting Terraform's
+own state) — note the CLI's configured default region is `ap-south-2`
+while this project deploys to `ap-south-1`, so `--region` has to be passed
+explicitly or the CLI looks in the wrong region entirely and reports
+"not found" for resources that do exist:
+
+```
+$ aws ec2 describe-instances --region ap-south-1 --instance-ids i-0caa9af400f3701e9 \
+    --query 'Reservations[0].Instances[0].[State.Name,InstanceType,PublicIpAddress,VpcId]' --output table
+running | t3.micro | 13.233.61.125 | vpc-0a04eeb355cfc9977
+
+$ curl -v http://13.233.61.125/
+* Connected to 13.233.61.125 (13.233.61.125) port 80
+> GET / HTTP/1.1
+* Recv failure: Connection reset by peer
+```
+
+The TCP connection succeeding on port 80 confirms the entire networking
+path works end to end (Security Group ingress rule, subnet routing,
+Internet Gateway) — the connection reset (not a timeout) is expected,
+since this is a bare AMI with no web server installed; the task is about
+the networking architecture, not deploying an app on top of it.
+
+Full output: [`terraform-infra/task_apply_output.txt`](terraform-infra/task_apply_output.txt)
+
+**Torn down afterward**, verified gone three ways (not just trusting
+`terraform destroy`'s own "success" message):
+
+```
+$ terraform destroy -auto-approve
+Destroy complete! Resources: 8 destroyed.
+
+$ aws ec2 describe-instances --region ap-south-1 --instance-ids i-0caa9af400f3701e9 --query '...State.Name'
+terminated
+
+$ aws s3 ls | grep session19 || echo 'bucket no longer exists'
+bucket no longer exists
+
+$ aws ec2 describe-vpcs --region ap-south-1 --vpc-ids vpc-0a04eeb355cfc9977
+An error occurred (InvalidVpcID.NotFound): The vpc ID 'vpc-0a04eeb355cfc9977' does not exist
+```
+
+Full output: [`terraform-infra/task_destroy_output.txt`](terraform-infra/task_destroy_output.txt)

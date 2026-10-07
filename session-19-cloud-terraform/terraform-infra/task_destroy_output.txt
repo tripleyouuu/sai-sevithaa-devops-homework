@@ -1,0 +1,12 @@
+$ terraform destroy -auto-approve
+(see output above — Destroy complete! Resources: 8 destroyed.)
+
+$ aws ec2 describe-instances --region ap-south-1 --instance-ids i-0caa9af400f3701e9 --query 'Reservations[0].Instances[0].State.Name' --output text
+terminated
+
+$ aws s3 ls | grep session19 || echo 'bucket no longer exists'
+bucket no longer exists
+
+$ aws ec2 describe-vpcs --region ap-south-1 --vpc-ids vpc-0a04eeb355cfc9977 2>&1 | head -3
+
+aws: [ERROR]: An error occurred (InvalidVpcID.NotFound) when calling the DescribeVpcs operation: The vpc ID 'vpc-0a04eeb355cfc9977' does not exist

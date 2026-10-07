@@ -1,0 +1,25 @@
+$ terraform output
+bucket_name = "sai-sevithaa-devops-session19-assets"
+instance_id = "i-0caa9af400f3701e9"
+instance_public_ip = "13.233.61.125"
+security_group_id = "sg-0ccdb793587c896db"
+subnet_id = "subnet-09f414da95be665d6"
+vpc_cidr = "10.20.0.0/16"
+vpc_id = "vpc-0a04eeb355cfc9977"
+
+$ aws ec2 describe-instances --instance-ids i-0caa9af400f3701e9 --query 'Reservations[0].Instances[0].[State.Name,InstanceType,PublicIpAddress,VpcId]' --output table
+
+aws: [ERROR]: An error occurred (InvalidInstanceID.NotFound) when calling the DescribeInstances operation: The instance ID 'i-0caa9af400f3701e9' does not exist
+
+$ aws s3 ls | grep session19
+2026-10-08 00:28:21 sai-sevithaa-devops-session19-assets
+--- CLI default region is ap-south-2, but Terraform created everything in ap-south-1 — need --region override ---
+$ aws ec2 describe-instances --region ap-south-1 --instance-ids i-0caa9af400f3701e9 --query 'Reservations[0].Instances[0].[State.Name,InstanceType,PublicIpAddress,VpcId]' --output table
+---------------------------
+|    DescribeInstances    |
++-------------------------+
+|  running                |
+|  t3.micro               |
+|  13.233.61.125          |
+|  vpc-0a04eeb355cfc9977  |
++-------------------------+
