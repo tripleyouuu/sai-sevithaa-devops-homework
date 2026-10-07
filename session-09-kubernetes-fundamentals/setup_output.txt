@@ -1,0 +1,51 @@
+$ minikube status
+minikube
+type: Control Plane
+host: Running
+kubelet: Running
+apiserver: Running
+kubeconfig: Configured
+
+
+$ kubectl cluster-info
+Kubernetes control plane is running at https://127.0.0.1:32771
+CoreDNS is running at https://127.0.0.1:32771/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+
+$ kubectl get nodes
+NAME       STATUS     ROLES           AGE   VERSION
+minikube   NotReady   control-plane   17s   v1.37.0
+
+$ kubectl config view --minify
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority: /Users/vitha/.minikube/ca.crt
+    extensions:
+    - extension:
+        last-update: Wed, 07 Oct 2026 21:54:00 WITA
+        provider: minikube.sigs.k8s.io
+        version: v1.39.0
+      name: cluster_info
+    server: https://127.0.0.1:32771
+  name: minikube
+contexts:
+- context:
+    cluster: minikube
+    extensions:
+    - extension:
+        last-update: Wed, 07 Oct 2026 21:54:00 WITA
+        provider: minikube.sigs.k8s.io
+        version: v1.39.0
+      name: context_info
+    namespace: default
+    user: minikube
+  name: minikube
+current-context: minikube
+kind: Config
+users:
+- name: minikube
+  user:
+    client-certificate: /Users/vitha/.minikube/profiles/minikube/client.crt
+    client-key: /Users/vitha/.minikube/profiles/minikube/client.key

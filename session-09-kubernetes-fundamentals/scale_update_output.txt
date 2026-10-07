@@ -1,0 +1,49 @@
+$ kubectl create deployment hello-k8s --image=nginx:1.25-alpine
+deployment.apps/hello-k8s created
+
+$ kubectl get pods
+NAME                         READY   STATUS              RESTARTS   AGE
+hello-k8s-6bb5f98d5f-xmfzb   0/1     ContainerCreating   0          4s
+
+$ kubectl expose deployment/hello-k8s --type=NodePort --port=80
+service/hello-k8s exposed
+
+$ kubectl get services
+NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+hello-k8s    NodePort    10.99.142.94   <none>        80:32039/TCP   0s
+kubernetes   ClusterIP   10.96.0.1      <none>        443/TCP        37m
+
+$ kubectl scale deployments/hello-k8s --replicas=3
+deployment.apps/hello-k8s scaled
+
+$ kubectl get pods -o wide
+NAME                         READY   STATUS              RESTARTS   AGE   IP       NODE       NOMINATED NODE   READINESS GATES
+hello-k8s-6bb5f98d5f-8sbxj   0/1     ContainerCreating   0          4s    <none>   minikube   <none>           <none>
+hello-k8s-6bb5f98d5f-xmfzb   0/1     ContainerCreating   0          8s    <none>   minikube   <none>           <none>
+hello-k8s-6bb5f98d5f-xsfmk   0/1     ContainerCreating   0          4s    <none>   minikube   <none>           <none>
+
+$ kubectl set image deployments/hello-k8s nginx=nginx:1.27-alpine
+deployment.apps/hello-k8s image updated
+
+$ kubectl rollout status deployments/hello-k8s
+Waiting for deployment "hello-k8s" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hello-k8s" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hello-k8s" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hello-k8s" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hello-k8s" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hello-k8s" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hello-k8s" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hello-k8s" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hello-k8s" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hello-k8s" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hello-k8s" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hello-k8s" rollout to finish: 1 old replicas are pending termination...
+deployment "hello-k8s" successfully rolled out
+
+$ kubectl get pods
+NAME                         READY   STATUS      RESTARTS   AGE
+hello-k8s-6bb5f98d5f-xmfzb   0/1     Completed   0          23s
+hello-k8s-6bb5f98d5f-xsfmk   0/1     Completed   0          19s
+hello-k8s-774d79f5bf-4ktwh   1/1     Running     0          1s
+hello-k8s-774d79f5bf-bqn86   1/1     Running     0          1s
+hello-k8s-774d79f5bf-lj6rc   1/1     Running     0          15s

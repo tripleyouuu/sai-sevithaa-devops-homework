@@ -1,0 +1,18 @@
+$ kubectl create deployment kubernetes-bootcamp --image=gcr.io/google-samples/kubernetes-bootcamp:v1
+deployment.apps/kubernetes-bootcamp created
+
+$ kubectl get deployments
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+kubernetes-bootcamp   0/1     1            0           0s
+
+$ kubectl get pods
+NAME                                   READY   STATUS              RESTARTS   AGE
+kubernetes-bootcamp-5cc66bcc9b-7sztv   0/1     ContainerCreating   0          5s
+
+$ kubectl expose deployment/kubernetes-bootcamp --type=NodePort --port=8080
+service/kubernetes-bootcamp exposed
+
+$ kubectl get services
+NAME                  TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+kubernetes            ClusterIP   10.96.0.1        <none>        443/TCP          45s
+kubernetes-bootcamp   NodePort    10.100.140.137   <none>        8080:32713/TCP   0s
