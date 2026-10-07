@@ -1,0 +1,141 @@
+=== ping ===
+PING google.com (142.251.12.138): 56 data bytes
+64 bytes from 142.251.12.138: icmp_seq=0 ttl=100 time=49.232 ms
+64 bytes from 142.251.12.138: icmp_seq=1 ttl=100 time=49.080 ms
+64 bytes from 142.251.12.138: icmp_seq=2 ttl=100 time=48.184 ms
+64 bytes from 142.251.12.138: icmp_seq=3 ttl=100 time=49.970 ms
+
+--- google.com ping statistics ---
+4 packets transmitted, 4 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 48.184/49.116/49.970/0.635 ms
+
+=== traceroute ===
+traceroute: Warning: google.com has multiple addresses; using 142.251.12.138
+traceroute to google.com (142.251.12.138), 10 hops max, 40 byte packets
+ 1  172.20.10.1 (172.20.10.1)  5.671 ms  4.904 ms  6.108 ms
+ 2  * * *
+ 3  * * *
+ 4  * * *
+ 5  * * *
+ 6  * * *
+ 7  * * *
+ 8  * * *
+ 9  * * *
+10  * * *
+
+=== ifconfig (macOS equivalent of ip addr) ===
+en0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500 constrained
+	options=6460<TSO4,TSO6,CHANNEL_IO,PARTIAL_CSUM,ZEROINVERT_CSUM>
+	ether 8e:89:f1:39:db:c8
+	inet6 fe80::8b3:c6dc:4e9:4b79%en0 prefixlen 64 secured scopeid 0xe 
+	inet 172.20.10.10 netmask 0xfffffff0 broadcast 172.20.10.15
+	inet6 2404:c0:3813:b890:1035:39e4:e21f:ebf5 prefixlen 64 autoconf secured 
+	inet6 2404:c0:3813:b890:91c:b79f:384a:dbf3 prefixlen 64 autoconf temporary 
+	nd6 options=201<PERFORMNUD,DAD>
+	media: autoselect
+	status: active
+
+=== nslookup ===
+Server:		1.0.0.1
+Address:	1.0.0.1#53
+
+Non-authoritative answer:
+Name:	google.com
+Address: 74.125.68.113
+Name:	google.com
+Address: 74.125.68.138
+Name:	google.com
+Address: 74.125.68.102
+Name:	google.com
+Address: 74.125.68.101
+Name:	google.com
+Address: 74.125.68.139
+Name:	google.com
+Address: 74.125.68.100
+
+
+=== dig ===
+
+; <<>> DiG 9.10.6 <<>> google.com
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 19953
+;; flags: qr rd ra; QUERY: 1, ANSWER: 6, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;google.com.			IN	A
+
+;; ANSWER SECTION:
+google.com.		207	IN	A	74.125.68.113
+google.com.		207	IN	A	74.125.68.138
+google.com.		207	IN	A	74.125.68.102
+google.com.		207	IN	A	74.125.68.101
+google.com.		207	IN	A	74.125.68.139
+google.com.		207	IN	A	74.125.68.100
+
+;; Query time: 38 msec
+;; SERVER: 1.0.0.1#53(1.0.0.1)
+;; WHEN: Wed Oct 07 21:06:36 WITA 2026
+;; MSG SIZE  rcvd: 135
+
+
+=== curl -I ===
+HTTP/2 301 
+location: https://www.google.com/
+content-type: text/html; charset=UTF-8
+content-security-policy-report-only: object-src 'none';base-uri 'self';script-src 'nonce-0vwncCZ3kQWRw_fQs7TZGg' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other-hp
+date: Wed, 07 Oct 2026 13:06:36 GMT
+expires: Fri, 06 Nov 2026 13:06:36 GMT
+cache-control: public, max-age=2592000
+server: gws
+content-length: 220
+x-xss-protection: 0
+x-frame-options: SAMEORIGIN
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+
+=== lsof -i (macOS equivalent of ss/netstat) ===
+COMMAND    PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+identitys  675 vitha    5u  IPv6 0x7d2f31e43ffbc573      0t0  TCP [fe80:16::4fef:484d:b157:8c8d]:1026->[fe80:16::54c7:cbdb:eebb:daf1]:1025 (ESTABLISHED)
+identitys  675 vitha   10u  IPv4 0x66758d7efd540c18      0t0  UDP *:*
+identitys  675 vitha   15u  IPv4 0xea3ade057509234e      0t0  UDP *:*
+identitys  675 vitha   20u  IPv4 0xd260a1d44323847c      0t0  UDP *:*
+identitys  675 vitha   47u  IPv4 0xdf49beabde6b1e96      0t0  UDP *:*
+identitys  675 vitha   50u  IPv4 0x5d396765fa1c9d5d      0t0  UDP *:*
+identitys  675 vitha   51u  IPv6 0x6995b63cd048025f      0t0  TCP [fe80:17::9c47:afb9:edd:45aa]:1024->[fe80:17::2ffb:5576:d3ab:516d]:1024 (ESTABLISHED)
+identitys  675 vitha   54u  IPv4 0xc928819fdc04cde0      0t0  UDP *:*
+identitys  675 vitha   55u  IPv6 0xd2a48bf5da06b4f3      0t0  TCP [fe80:17::9c47:afb9:edd:45aa]:1027->[fe80:17::2ffb:5576:d3ab:516d]:1025 (ESTABLISHED)
+identitys  675 vitha   56u  IPv6 0xd2a48bf5da06b4f3      0t0  TCP [fe80:17::9c47:afb9:edd:45aa]:1027->[fe80:17::2ffb:5576:d3ab:516d]:1025 (ESTABLISHED)
+identitys  675 vitha   58u  IPv6 0x2cf8f288a4bab803      0t0  TCP [fe80:16::4fef:484d:b157:8c8d]:1024->[fe80:16::54c7:cbdb:eebb:daf1]:1024 (ESTABLISHED)
+identitys  675 vitha   61u  IPv4  0x3166580a0f8c428      0t0  UDP *:*
+identitys  675 vitha   62u  IPv6 0x7d2f31e43ffbc573      0t0  TCP [fe80:16::4fef:484d:b157:8c8d]:1026->[fe80:16::54c7:cbdb:eebb:daf1]:1025 (ESTABLISHED)
+replicato  676 vitha    9u  IPv6 0x2956a8a044f4531e      0t0  UDP *:59990
+
+=== whois ===
+% IANA WHOIS server
+% for more information on IANA, visit http://www.iana.org
+% This query returned 1 object
+
+refer:        whois.verisign-grs.com
+
+domain:       COM
+
+organisation: VeriSign Global Registry Services
+address:      12061 Bluemont Way
+address:      Reston VA 20190
+address:      United States of America (the)
+
+contact:      administrative
+name:         Registry Customer Service
+organisation: VeriSign Global Registry Services
+address:      12061 Bluemont Way
+address:      Reston VA 20190
+address:      United States of America (the)
+phone:        +1 703 925-6999
+fax-no:       +1 703 948 3978
+e-mail:       info@verisign-grs.com
+
+contact:      technical
+name:         Registry Customer Service
