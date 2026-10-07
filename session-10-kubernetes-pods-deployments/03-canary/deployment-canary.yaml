@@ -7,11 +7,6 @@ metadata:
     track: canary
     version: v2
 spec:
-  # 1 canary pod = 10% of traffic (1 out of 10 total pods)
-  # To increase canary traffic: scale up this deployment and scale down stable
-  #   e.g. 10% -> scale canary to 1 replicas (1/10 total)
-  #        20% -> scale canary to 2 replicas (2/10 total)
-  #        50% -> scale canary to 5 replicas (5/10 total)
   replicas: 1
   selector:
     matchLabels:

@@ -8,7 +8,6 @@ import math
 
 app = Flask(__name__)
 
-# --- In-memory storage for demo ---
 _request_count = 0
 _start_time = datetime.datetime.utcnow()
 
@@ -18,19 +17,11 @@ def _increment_requests():
     _request_count += 1
 
 
-# ─────────────────────────────────────────────────────────
-#  Pages
-# ─────────────────────────────────────────────────────────
-
 @app.route("/")
 def home():
     _increment_requests()
     return render_template("index.html")
 
-
-# ─────────────────────────────────────────────────────────
-#  Health & Status API
-# ─────────────────────────────────────────────────────────
 
 @app.route("/health")
 def health():
@@ -61,10 +52,6 @@ def status():
     })
 
 
-# ─────────────────────────────────────────────────────────
-#  Greeting API
-# ─────────────────────────────────────────────────────────
-
 @app.route("/api/greet/<name>")
 def greet(name):
     _increment_requests()
@@ -81,10 +68,6 @@ def greet(name):
         "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
     })
 
-
-# ─────────────────────────────────────────────────────────
-#  Math API
-# ─────────────────────────────────────────────────────────
 
 @app.route("/api/add", methods=["POST"])
 def add_numbers():
@@ -114,7 +97,6 @@ def add_numbers():
 
 @app.route("/api/calculate", methods=["POST"])
 def calculate():
-    """Multi-operation calculator."""
     _increment_requests()
     data = request.get_json()
     if not data:
@@ -157,10 +139,6 @@ def calculate():
     })
 
 
-# ─────────────────────────────────────────────────────────
-#  Pipeline Simulator API
-# ─────────────────────────────────────────────────────────
-
 PIPELINE_STAGES = [
     {"name": "Code Checkout",      "icon": "📦"},
     {"name": "Install Deps",       "icon": "📥"},
@@ -175,11 +153,10 @@ PIPELINE_STAGES = [
 
 @app.route("/api/pipeline/run", methods=["POST"])
 def run_pipeline():
-    """Simulates a CI/CD pipeline run."""
     _increment_requests()
     data = request.get_json() or {}
     branch = data.get("branch", "main")
-    fail_chance = data.get("fail_chance", 0.1)   # 0–1 probability
+    fail_chance = data.get("fail_chance", 0.1)
 
     stages = []
     failed = False
@@ -215,10 +192,6 @@ def run_pipeline():
         "triggered_at": datetime.datetime.utcnow().isoformat() + "Z",
     })
 
-
-# ─────────────────────────────────────────────────────────
-#  Error handlers
-# ─────────────────────────────────────────────────────────
 
 @app.errorhandler(404)
 def not_found(e):
