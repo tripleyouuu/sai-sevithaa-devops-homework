@@ -2,7 +2,11 @@
 
 Source: `DevOps Homework.pdf`. Session 21 (final project) is intentionally excluded per instructions.
 
-Session numbering note: the PDF only labels sessions explicitly from "Session 10" onward. Per your instruction, Sessions 1 and 2 are treated as a single combined unit (one Linux homework, one submission), which keeps "Session 10: Kubernetes Pods..." aligned with its explicit label. Sessions 3–20 then map one-to-one to the remaining topic blocks in the PDF, in order.
+**Update:** the course's own source-material repo (`devops-heros`, cloned locally to `/Users/vitha/Desktop/devops-heros`) is now available and confirms the session numbering definitively: Session 1 = DevOps Engineer Roadmap (orientation, no homework), Session 2 = Linux, Session 3 = Shell Scripting, Session 4 = Networking, Session 5 = Git/GitHub, Sessions 6–7 = Docker, Session 8 = Docker Networking & Volumes, Session 9 = Kubernetes fundamentals, Session 10 = K8s core objects, Sessions 11–20 as already mapped. The earlier "combine 1+2" folder has been split back into `session-01-devops-roadmap` and `session-02-linux` to match. From here on, each session's folder in this repo is built using the real source material in `devops-heros/sessionN-...` as ground truth rather than generic equivalents.
+
+## Tooling status
+
+Installed via Homebrew: Colima, Docker CLI + Compose, kubectl, Minikube, Helm, Terraform (via `hashicorp/tap`), AWS CLI, Node.js, Maven, gh CLI, poppler. Colima still needs to be started (`colima start`) before any `docker`/`minikube` command will work — done per-session as needed.
 
 ## Phase 0: Tooling prerequisites (blocking)
 

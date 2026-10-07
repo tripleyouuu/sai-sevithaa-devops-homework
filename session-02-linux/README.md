@@ -1,9 +1,8 @@
-# Sessions 1-2: Linux Fundamentals
+# Session 2: Linux Fundamentals
 
-Combined into one submission per the course structure. Tasks 1 and 4 were run
-directly on this machine (both are standard POSIX commands, identical on
-macOS and Ubuntu). Tasks 2 and 3 need a real Linux environment — see status
-below.
+Tasks 1 and 4 were run directly on this machine (both are standard POSIX
+commands, identical on macOS and Ubuntu). Tasks 2 and 3 need a real Linux
+environment — see status below.
 
 ## Task 1: Soft Link & Hard Link
 
