@@ -1,0 +1,85 @@
+$ terraform apply -auto-approve
+(see output above — Apply complete! Resources: 1 added, 0 changed, 0 destroyed.)
+bucket_arn = "arn:aws:s3:::sai-sevithaa-devops-session18-demo"
+bucket_name = "sai-sevithaa-devops-session18-demo"
+bucket_region = "ap-south-1"
+
+$ terraform show
+# aws_s3_bucket.devops553:
+resource "aws_s3_bucket" "devops553" {
+    acceleration_status         = [90mnull[0m[0m
+    arn                         = "arn:aws:s3:::sai-sevithaa-devops-session18-demo"
+    bucket                      = "sai-sevithaa-devops-session18-demo"
+    bucket_domain_name          = "sai-sevithaa-devops-session18-demo.s3.amazonaws.com"
+    bucket_namespace            = "global"
+    bucket_prefix               = [90mnull[0m[0m
+    bucket_region               = "ap-south-1"
+    bucket_regional_domain_name = "sai-sevithaa-devops-session18-demo.s3.ap-south-1.amazonaws.com"
+    force_destroy               = true
+    hosted_zone_id              = "Z11RGJOFQNVJUP"
+    id                          = "sai-sevithaa-devops-session18-demo"
+    object_lock_enabled         = false
+    policy                      = [90mnull[0m[0m
+    region                      = "ap-south-1"
+    request_payer               = "BucketOwner"
+    tags                        = {
+        "Environment" = "dev"
+        "ManagedBy"   = "Terraform"
+        "Name"        = "sai-sevithaa-devops-session18-demo"
+        "Project"     = "Session18"
+    }
+    tags_all                    = {
+        "Environment" = "dev"
+        "ManagedBy"   = "Terraform"
+        "Name"        = "sai-sevithaa-devops-session18-demo"
+        "Project"     = "Session18"
+    }
+
+    grant {
+        id          = "0050059f6930c19482ae7152d80f25a2e81e2147d6271f3e0e7187da7369e8ec"
+        permissions = [
+            "FULL_CONTROL",
+        ]
+        type        = "CanonicalUser"
+        uri         = [90mnull[0m[0m
+    }
+
+    server_side_encryption_configuration {
+        rule {
+            bucket_key_enabled = false
+
+            apply_server_side_encryption_by_default {
+                kms_master_key_id = [90mnull[0m[0m
+                sse_algorithm     = "AES256"
+            }
+        }
+    }
+
+    versioning {
+        enabled    = false
+        mfa_delete = false
+    }
+}
+
+
+Outputs:
+
+bucket_arn = "arn:aws:s3:::sai-sevithaa-devops-session18-demo"
+bucket_name = "sai-sevithaa-devops-session18-demo"
+bucket_region = "ap-south-1"
+
+$ terraform output
+bucket_arn = "arn:aws:s3:::sai-sevithaa-devops-session18-demo"
+bucket_name = "sai-sevithaa-devops-session18-demo"
+bucket_region = "ap-south-1"
+
+$ aws s3api head-bucket --bucket sai-sevithaa-devops-session18-demo
+{
+    "BucketArn": "arn:aws:s3:::sai-sevithaa-devops-session18-demo",
+    "BucketRegion": "ap-south-1",
+    "AccessPointAlias": false
+}
+Bucket exists and is accessible
+
+$ aws s3 ls | grep sai-sevithaa
+2026-10-08 00:25:20 sai-sevithaa-devops-session18-demo

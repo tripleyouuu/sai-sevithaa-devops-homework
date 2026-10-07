@@ -39,21 +39,54 @@ likely collide with the course author's own bucket (or fail with
 `BucketAlreadyExists` for an unrelated reason) once real credentials are
 in place.
 
-**Still needed to finish this task:** your own AWS credentials via
-`aws configure` (see the chat for the walkthrough). Once that's done:
+### Full workflow, run for real against a live AWS account
 
-```bash
-cd terraform-s3-demo
-terraform plan      # review what will be created
-terraform apply     # create it (will ask for confirmation)
-terraform show       # inspect the created state
-terraform output     # print bucket_name / bucket_arn / bucket_region
-terraform destroy   # tear it down once verified
+Once AWS credentials were configured (`aws configure`, verified first via
+`aws sts get-caller-identity` without ever exposing the actual key values)
+and the IAM user had `AdministratorAccess` attached (the first `apply`
+attempt correctly failed with `AccessDenied: ... s3:CreateBucket` until
+this was granted):
+
+```
+$ terraform apply -auto-approve
+aws_s3_bucket.devops553: Creating...
+aws_s3_bucket.devops553: Creation complete after 5s [id=sai-sevithaa-devops-session18-demo]
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+
+Outputs:
+bucket_arn = "arn:aws:s3:::sai-sevithaa-devops-session18-demo"
+bucket_name = "sai-sevithaa-devops-session18-demo"
+bucket_region = "ap-south-1"
 ```
 
-I'll run these with you and show the plan before anything real gets
-created, per the confirm-before-apply rule from earlier in this
-conversation.
+Verified independently via the AWS CLI (not just Terraform's own state)
+that the bucket is real:
+
+```
+$ aws s3api head-bucket --bucket sai-sevithaa-devops-session18-demo
+{"BucketArn": "arn:aws:s3:::sai-sevithaa-devops-session18-demo", "BucketRegion": "ap-south-1", ...}
+
+$ aws s3 ls | grep sai-sevithaa
+2026-10-08 00:25:20 sai-sevithaa-devops-session18-demo
+```
+
+`terraform show` and `terraform output` captured in
+[`terraform-s3-demo/task1_apply_output.txt`](terraform-s3-demo/task1_apply_output.txt).
+
+Then torn down to avoid any ongoing cost:
+
+```
+$ terraform destroy -auto-approve
+aws_s3_bucket.devops553: Destroying... [id=sai-sevithaa-devops-session18-demo]
+aws_s3_bucket.devops553: Destruction complete after 2s
+Destroy complete! Resources: 1 destroyed.
+
+$ aws s3 ls | grep sai-sevithaa || echo 'bucket no longer exists'
+bucket no longer exists
+```
+
+Full output: [`terraform-s3-demo/task1_destroy_output.txt`](terraform-s3-demo/task1_destroy_output.txt)
 
 ## Task 2: AWS Services Research (`aws-services/`)
 

@@ -1,0 +1,76 @@
+$ terraform destroy -auto-approve
+[0m[1maws_s3_bucket.devops553: Refreshing state... [id=sai-sevithaa-devops-session18-demo][0m
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  [31m-[0m destroy[0m
+
+Terraform will perform the following actions:
+
+[1m  # aws_s3_bucket.devops553[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_s3_bucket" "devops553" {
+      [31m-[0m[0m arn                         = "arn:aws:s3:::sai-sevithaa-devops-session18-demo" [90m-> null[0m[0m
+      [31m-[0m[0m bucket                      = "sai-sevithaa-devops-session18-demo" [90m-> null[0m[0m
+      [31m-[0m[0m bucket_domain_name          = "sai-sevithaa-devops-session18-demo.s3.amazonaws.com" [90m-> null[0m[0m
+      [31m-[0m[0m bucket_namespace            = "global" [90m-> null[0m[0m
+      [31m-[0m[0m bucket_region               = "ap-south-1" [90m-> null[0m[0m
+      [31m-[0m[0m bucket_regional_domain_name = "sai-sevithaa-devops-session18-demo.s3.ap-south-1.amazonaws.com" [90m-> null[0m[0m
+      [31m-[0m[0m force_destroy               = true [90m-> null[0m[0m
+      [31m-[0m[0m hosted_zone_id              = "Z11RGJOFQNVJUP" [90m-> null[0m[0m
+      [31m-[0m[0m id                          = "sai-sevithaa-devops-session18-demo" [90m-> null[0m[0m
+      [31m-[0m[0m object_lock_enabled         = false [90m-> null[0m[0m
+      [31m-[0m[0m region                      = "ap-south-1" [90m-> null[0m[0m
+      [31m-[0m[0m request_payer               = "BucketOwner" [90m-> null[0m[0m
+      [31m-[0m[0m tags                        = {
+          [31m-[0m[0m "Environment" = "dev"
+          [31m-[0m[0m "ManagedBy"   = "Terraform"
+          [31m-[0m[0m "Name"        = "sai-sevithaa-devops-session18-demo"
+          [31m-[0m[0m "Project"     = "Session18"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                    = {
+          [31m-[0m[0m "Environment" = "dev"
+          [31m-[0m[0m "ManagedBy"   = "Terraform"
+          [31m-[0m[0m "Name"        = "sai-sevithaa-devops-session18-demo"
+          [31m-[0m[0m "Project"     = "Session18"
+        } [90m-> null[0m[0m
+        [90m# (3 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m grant {
+          [31m-[0m[0m id          = "0050059f6930c19482ae7152d80f25a2e81e2147d6271f3e0e7187da7369e8ec" [90m-> null[0m[0m
+          [31m-[0m[0m permissions = [
+              [31m-[0m[0m "FULL_CONTROL",
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m type        = "CanonicalUser" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m server_side_encryption_configuration {
+          [31m-[0m[0m rule {
+              [31m-[0m[0m bucket_key_enabled = false [90m-> null[0m[0m
+
+              [31m-[0m[0m apply_server_side_encryption_by_default {
+                  [31m-[0m[0m sse_algorithm     = "AES256" [90m-> null[0m[0m
+                    [90m# (1 unchanged attribute hidden)[0m[0m
+                }
+            }
+        }
+
+      [31m-[0m[0m versioning {
+          [31m-[0m[0m enabled    = false [90m-> null[0m[0m
+          [31m-[0m[0m mfa_delete = false [90m-> null[0m[0m
+        }
+    }
+
+[1mPlan:[0m [0m0 to add, 0 to change, 1 to destroy.
+
+Changes to Outputs:
+  [31m-[0m[0m bucket_arn    = "arn:aws:s3:::sai-sevithaa-devops-session18-demo" [90m-> null[0m[0m
+  [31m-[0m[0m bucket_name   = "sai-sevithaa-devops-session18-demo" [90m-> null[0m[0m
+  [31m-[0m[0m bucket_region = "ap-south-1" [90m-> null[0m[0m
+[0m[1maws_s3_bucket.devops553: Destroying... [id=sai-sevithaa-devops-session18-demo][0m[0m
+[0m[1maws_s3_bucket.devops553: Destruction complete after 2s[0m
+[0m[1m[32m
+Destroy complete! Resources: 1 destroyed.[0m
+
+$ aws s3 ls | grep sai-sevithaa || echo 'bucket no longer exists'
+bucket no longer exists
