@@ -1,4 +1,4 @@
-# Session 6-7: Docker Hello World Applications
+# Session 6-7 — Docker Hello World Applications
 
 Six minimal "Hello World" web apps, each in its own folder with its own
 `Dockerfile`, built and run via Docker (Colima as the engine on this Mac).

@@ -6,7 +6,6 @@ metadata:
     app: app-recreate
 spec:
   replicas: 3
-  # Recreate strategy: All v1 pods are terminated BEFORE v2 pods are created.
   strategy:
     type: Recreate
   selector:

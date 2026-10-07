@@ -1,4 +1,4 @@
-# Session 7: Docker Multi-Stage Build
+# Session 7 — Docker Multi-Stage Build
 
 **Name:** Vitha
 **Enrollment number:** 24bcs10145

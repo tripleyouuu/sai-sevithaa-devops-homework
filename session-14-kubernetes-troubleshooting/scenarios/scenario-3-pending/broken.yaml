@@ -11,6 +11,5 @@ spec:
       image: nginx:alpine
       resources:
         requests:
-          # BUG: Demanding 500 CPU cores ensures the pod can never be scheduled!
           cpu: "500"
           memory: "1000Gi"

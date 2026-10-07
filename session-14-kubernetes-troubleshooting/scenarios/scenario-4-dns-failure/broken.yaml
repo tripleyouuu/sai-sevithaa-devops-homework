@@ -13,7 +13,6 @@ spec:
       args:
         - |
           echo "Attempting connection to internal database...";
-          # BUG: Incorrect internal hostname
           curl -s --connect-timeout 3 http://postgres-db-wrong-name.production.svc.cluster.local:5432 || true
           echo "Process sleeping...";
           sleep 3600

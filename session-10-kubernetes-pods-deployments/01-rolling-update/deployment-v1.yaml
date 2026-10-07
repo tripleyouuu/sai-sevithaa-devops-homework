@@ -6,9 +6,6 @@ metadata:
     app: app-rolling
 spec:
   replicas: 4
-  # RollingUpdate: Kubernetes replaces old pods one-by-one while keeping the service up.
-  # maxSurge: 1     -> Allows 1 extra pod above the desired count during the update.
-  # maxUnavailable: 0 -> Zero pods can be unavailable at any point. Zero downtime guaranteed.
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -28,7 +25,6 @@ spec:
           image: nginx:1.24-alpine
           ports:
             - containerPort: 80
-          # Custom HTML shows version so students can see it change in their browser
           lifecycle:
             postStart:
               exec:

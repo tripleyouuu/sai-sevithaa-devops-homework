@@ -20,7 +20,6 @@ spec:
           command: ["python3", "-c", "import os, time; print(f'Running with ENV={os.getenv(\"ENVIRONMENT\")} and USER={os.getenv(\"POSTGRES_USER\")}'); time.sleep(3600)"]
           ports:
             - containerPort: 5000
-          # Bulk inject plain-text configuration from ConfigMap
           envFrom:
             - configMapRef:
                 name: yatri-app-config

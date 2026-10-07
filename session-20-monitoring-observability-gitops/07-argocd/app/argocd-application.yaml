@@ -1,4 +1,3 @@
-# Apply this file from your local/admin environment; do not put it under the Git source path.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:

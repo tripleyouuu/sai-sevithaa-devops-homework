@@ -1,6 +1,4 @@
 ---
-# Backend Deployment — reads ConfigMap + Secret as environment variables
-# Uses a simple Python HTTP server to return config values in the response body
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -57,11 +55,9 @@ spec:
               "
           ports:
             - containerPort: 5000
-          # Inject plain-text config from ConfigMap
           envFrom:
             - configMapRef:
                 name: yatri-app-config
-          # Inject sensitive credentials from Secret
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -86,7 +82,6 @@ spec:
               cpu: "200m"
               memory: "128Mi"
 ---
-# Backend ClusterIP Service
 apiVersion: v1
 kind: Service
 metadata:

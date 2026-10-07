@@ -1,9 +1,8 @@
-# Session 8: Docker Networking & Volumes
+# Session 8 — Docker Networking & Volumes
 
-## Task 1: Container networking
+## Task 1 — Container networking
 
-Three containers (frontend, backend, database) across three user-defined
-networks, with backend joined to two of them.
+Three containers across three networks, backend joined to two of them.
 
 ```
 $ docker network create net1
@@ -22,28 +21,24 @@ $ docker network inspect net2 --format '{{range .Containers}}{{.Name}} {{end}}'
 database backend
 ```
 
-Full output: [`task1_setup_output.txt`](task1_setup_output.txt)
+Full output: [task1_setup_output.txt](task1_setup_output.txt)
 
-**Connectivity check** — backend can reach both neighbors since it's on
-both networks; frontend (net1 only) cannot resolve database (net2 only),
-which is exactly what network-scoped DNS is supposed to do:
+Backend can reach both neighbors since it's on both networks. Frontend (net1 only) can't resolve database (net2 only):
 
 ```
 $ docker exec frontend ping -c 2 backend
 64 bytes from 172.18.0.3: seq=0 ttl=64 time=0.133 ms
---- 0% packet loss ---
 
 $ docker exec backend ping -c 2 database
 64 bytes from 172.19.0.2: seq=0 ttl=64 time=0.084 ms
---- 0% packet loss ---
 
-$ docker exec frontend ping -c 2 database   (should fail, frontend is not on net2)
+$ docker exec frontend ping -c 2 database
 ping: bad address 'database'
 ```
 
-Full output: [`task1_connectivity_output.txt`](task1_connectivity_output.txt)
+Full output: [task1_connectivity_output.txt](task1_connectivity_output.txt)
 
-## Task 2: Host network
+## Task 2 — Host network
 
 ```
 $ docker pull httpd
@@ -53,14 +48,11 @@ $ curl http://localhost:80/
 <html><head><title>It works! Apache httpd</title></head>...
 ```
 
-With `--network host`, the container skips Docker's own network namespace
-and binds directly to the host's (here, Colima's Linux VM, whose ports 80
-forward straight through to `localhost` on the Mac) — no `-p` mapping
-needed or possible, since there's no isolation to map through.
+`--network host` skips Docker's own network namespace and binds directly to the host, so no `-p` mapping is needed.
 
-Full output: [`task2_host_network_output.txt`](task2_host_network_output.txt) · Screenshot: [`task2_screenshot.png`](task2_screenshot.png)
+Full output: [task2_host_network_output.txt](task2_host_network_output.txt) · Screenshot: [task2_screenshot.png](task2_screenshot.png)
 
-## Task 3: Bind mount
+## Task 3 — Bind mount
 
 ```
 $ mkdir bindmount-demo
@@ -71,9 +63,9 @@ $ curl http://localhost:8090/
 Hello students
 ```
 
-Screenshot before edit: [`task3_before_screenshot.png`](task3_before_screenshot.png)
+Screenshot: [task3_before_screenshot.png](task3_before_screenshot.png)
 
-Then, **without restarting the container**, edited the local file directly:
+Edited the file on the host, no restart:
 
 ```
 $ echo "Hello students - updated without restart" > bindmount-demo/index.html
@@ -81,31 +73,12 @@ $ curl http://localhost:8090/
 Hello students - updated without restart
 ```
 
-Screenshot after edit: [`task3_after_screenshot.png`](task3_after_screenshot.png)
+Screenshot: [task3_after_screenshot.png](task3_after_screenshot.png)
 
-A bind mount isn't a copy — it's the container reading/writing the exact
-same inode as the host path, so any host-side edit is visible inside the
-container immediately (and vice versa), unlike `COPY` in a Dockerfile which
-bakes a snapshot into the image at build time.
+A bind mount shares the same inode as the host path, so edits show up immediately in both directions — unlike `COPY`, which bakes a snapshot in at build time.
 
-## Task 4: Overlay networks (research)
+## Task 4 — Overlay networks (research)
 
-An **overlay network** is Docker's multi-host networking driver, built for
-Swarm (or Kubernetes-adjacent setups) where containers on *different
-physical/virtual machines* need to talk to each other as if they were on
-the same L2 network. It works by encapsulating container traffic in VXLAN
-packets and tunneling them between the Docker daemons on each host, using a
-distributed key-value store (Swarm's built-in Raft log) to keep every node's
-view of the network consistent.
+An overlay network is Docker's multi-host driver — it encapsulates container traffic in VXLAN and tunnels it between Docker daemons on different machines, so containers on separate hosts can talk as if on the same network. Bridge networks (used above) only work within one host. Overlay networks are Swarm's default network type, and the same problem is what a CNI plugin (Calico, Flannel) solves for Kubernetes pod-to-pod traffic across nodes.
 
-The bridge networks used in Tasks 1–3 only work within a single Docker
-host — containers on different machines can't see each other over a bridge
-network at all. Overlay networks exist specifically to remove that
-single-host limitation, which is why they're the default network type for
-Swarm services and are conceptually similar to what a CNI plugin (Calico,
-Flannel) provides for Kubernetes pod-to-pod networking across nodes.
-
-Not demoed hands-on here since it needs a multi-node Swarm cluster, which is
-out of scope for this single-machine Colima setup — Kubernetes' own
-cross-node pod networking (covered from Session 9 onward) is the practical
-equivalent used for the rest of this course.
+Not demoed hands-on — needs a multi-node Swarm cluster. Kubernetes' own cross-node networking (Session 9 onward) is the practical equivalent used for the rest of this course.

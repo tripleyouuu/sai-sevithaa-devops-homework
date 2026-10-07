@@ -1,9 +1,3 @@
-/* ────────────────────────────────────────────────────────
-   DevSecOps Dashboard – JavaScript
-   ──────────────────────────────────────────────────────── */
-
-// ── Helpers ────────────────────────────────────────────
-
 function scrollTo(hash) {
   document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -27,7 +21,6 @@ function setLoading(btnId, loading) {
   btn.textContent = loading ? '⏳ Loading…' : btn.dataset.label || btn.textContent;
 }
 
-// ── Health Check ───────────────────────────────────────
 
 async function checkHealth() {
   try {
@@ -50,7 +43,6 @@ async function checkHealth() {
   }
 }
 
-// ── Status Cards ───────────────────────────────────────
 
 async function loadStatus() {
   const btn = document.getElementById('refresh-status-btn');
@@ -87,7 +79,6 @@ function renderStatusCards(data) {
   setHTML('status-cards', html);
 }
 
-// ── Greet API ──────────────────────────────────────────
 
 async function doGreet() {
   const input = document.getElementById('greet-input');
@@ -113,14 +104,12 @@ async function doGreet() {
   }
 }
 
-// Enter key support for greet
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('greet-input')?.addEventListener('keydown', e => {
     if (e.key === 'Enter') doGreet();
   });
 });
 
-// ── Calculator API ─────────────────────────────────────
 
 async function doCalc() {
   const a   = document.getElementById('calc-a')?.value;
@@ -155,7 +144,6 @@ async function doCalc() {
   }
 }
 
-// ── Pipeline Simulator ─────────────────────────────────
 
 async function runPipeline() {
   const branch    = document.getElementById('pipe-branch')?.value || 'main';
@@ -189,7 +177,6 @@ async function renderPipeline(data, container) {
   container.classList.remove('hidden');
   container.innerHTML = '';
 
-  // Animate stages one by one
   for (const stage of data.stages) {
     await sleep(120);
 
@@ -210,7 +197,6 @@ async function renderPipeline(data, container) {
     `;
     container.appendChild(row);
 
-    // Trigger animation
     requestAnimationFrame(() => {
       row.style.transition = 'opacity .25s ease, transform .25s ease';
       row.style.opacity = '1';
@@ -218,7 +204,6 @@ async function renderPipeline(data, container) {
     });
   }
 
-  // Summary
   await sleep(150);
   const isPass     = data.overall_status === 'passed';
   const summaryEl  = document.createElement('div');
@@ -248,16 +233,13 @@ async function renderPipeline(data, container) {
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// ── Init ───────────────────────────────────────────────
 
 window.addEventListener('DOMContentLoaded', () => {
   checkHealth();
   loadStatus();
 
-  // Re-check health every 30 seconds
   setInterval(checkHealth, 30_000);
 
-  // Scroll-spy: highlight nav on scroll
   const sections = document.querySelectorAll('section[id]');
   const navLinks  = document.querySelectorAll('.nav-link');
 
@@ -275,7 +257,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   sections.forEach(s => observer.observe(s));
 
-  // Navbar shrink on scroll
   window.addEventListener('scroll', () => {
     document.getElementById('navbar')?.classList.toggle('scrolled', window.scrollY > 40);
   }, { passive: true });

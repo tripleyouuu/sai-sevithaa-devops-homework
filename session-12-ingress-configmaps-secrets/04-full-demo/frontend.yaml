@@ -1,5 +1,4 @@
 ---
-# Frontend Deployment — serves an HTML page at path /
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,7 +21,6 @@ spec:
           image: nginx:1.25-alpine
           ports:
             - containerPort: 80
-          # Inject plain-text config from ConfigMap
           envFrom:
             - configMapRef:
                 name: yatri-app-config
@@ -34,7 +32,6 @@ spec:
               cpu: "100m"
               memory: "128Mi"
 ---
-# Frontend ClusterIP Service
 apiVersion: v1
 kind: Service
 metadata:

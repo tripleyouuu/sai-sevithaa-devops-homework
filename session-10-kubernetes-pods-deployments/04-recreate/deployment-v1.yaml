@@ -6,8 +6,6 @@ metadata:
     app: app-recreate
 spec:
   replicas: 3
-  # Recreate strategy: Kubernetes terminates ALL old pods before creating any new pods.
-  # This guarantees no two versions run concurrently, but causes a brief downtime.
   strategy:
     type: Recreate
   selector:

@@ -13,7 +13,6 @@ spec:
         - "python3"
         - "-c"
         - |
-          # BUG: Rapidly allocates 200MB of RAM while limit is 20Mi
           print("Allocating memory rapidly...")
           chunks = []
           for i in range(100):

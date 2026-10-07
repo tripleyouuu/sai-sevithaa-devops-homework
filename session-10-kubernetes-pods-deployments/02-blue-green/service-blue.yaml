@@ -1,6 +1,3 @@
-# service-blue.yaml — Service pointing to BLUE (v1) — LIVE traffic
-# To switch to GREEN: change selector slot: blue -> slot: green
-# OR apply service-green.yaml directly
 apiVersion: v1
 kind: Service
 metadata:
@@ -9,10 +6,9 @@ metadata:
     app: myapp
 spec:
   type: NodePort
-  # THE SWITCH: Change this selector to switch all traffic instantly
   selector:
     app: myapp
-    slot: blue     # <-- Currently routing to BLUE (v1)
+    slot: blue
   ports:
     - name: http
       port: 80

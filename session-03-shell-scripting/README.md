@@ -1,16 +1,6 @@
-# Session 3: Shell Scripting — System Information Script
+# Session 3 — Shell Scripting
 
-`sysinfo.sh` prints system information, takes user input, and stores the running
-process list to a file.
-
-## What it does
-
-- Prints the current date, hostname, and username (stored in variables)
-- Prints disk usage with `df -h`
-- Prompts for an output directory and file name with `read -p`
-- Creates the directory with `mkdir -p`
-- Creates the file with `touch`
-- Writes the running process list into that file with `ps aux > file`
+`sysinfo.sh` prints date/hostname/username/disk usage, prompts for a directory and file name, creates both, and writes the running process list into the file.
 
 ## Run it
 

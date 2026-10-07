@@ -1,18 +1,11 @@
-# Session 5: Git — commit -a -m and Cherry-Pick
+# Session 5 — Git
 
-Demonstrated in a scratch repo (not this homework repo's own history, to keep
-that history clean). Full command transcript below.
+Demoed in a scratch repo, not this homework repo's own history.
 
-## Task 1: `git commit -a -m` vs `git commit -m`
+## Task 1 — `git commit -a -m` vs `git commit -m`
 
 ```
 $ git commit -m "update without -a"
-On branch main
-Changes not staged for commit:
-  (use "git add <file>..." to update what will be committed)
-  (use "git restore <file>..." to discard changes in working directory)
-	modified:   file1.txt
-
 no changes added to commit (use "git add" and/or "git commit -a")
 
 $ git status --short
@@ -27,70 +20,46 @@ $ git log --oneline
 c522ce7 initial commit
 ```
 
-**Difference:** `git commit -m "msg"` only commits what's already staged with
-`git add`. Since `file1.txt` had unstaged modifications, the first commit did
-nothing. `git commit -a -m "msg"` automatically stages all changes to
-**already-tracked** files (modified or deleted, not new/untracked files)
-before committing — so the second command succeeded in one step.
+`-m` alone only commits what's already staged. `file1.txt` had unstaged changes, so the first commit did nothing. `-a -m` auto-stages changes to already-tracked files before committing, in one step.
 
-## Task 2: Cherry-Pick
+## Task 2 — Cherry-pick
 
 ```
-$ git log --oneline (main, before branching)
+$ git log --oneline
 e6016ad third commit on main
 619f026 update with -a
 c522ce7 initial commit
 
 $ git checkout -b feature-branch
-
-$ git log --oneline (feature-branch)
+$ git log --oneline
 f103009 feature: important fix to cherry-pick
 12a1367 feature: extend feature.txt
 1350cae feature: add feature.txt
-e6016ad third commit on main
-619f026 update with -a
-c522ce7 initial commit
-```
+...
 
-Back on `main`, cherry-picking the commit that first introduces `feature.txt`:
-
-```
 $ git checkout main
-
 $ git cherry-pick 1350cae
 [main cae00b3] feature: add feature.txt
- Date: Wed Oct 7 21:03:41 2026 +0800
- 1 file changed, 1 insertion(+)
- create mode 100644 feature.txt
 
 $ git log --oneline
 cae00b3 feature: add feature.txt
 e6016ad third commit on main
-619f026 update with -a
-c522ce7 initial commit
+...
 
 $ cat feature.txt
 feature-a
 ```
 
-`feature.txt` is now present on `main` with the content from the cherry-picked
-commit, confirming the change made it across branches without merging the
-whole `feature-branch`.
+`feature.txt` is now on `main` with the content from the cherry-picked commit, without merging all of `feature-branch`.
 
-### Bonus: what a cherry-pick conflict looks like
+### Bonus: a cherry-pick conflict
 
-Picking a *later* feature-branch commit (one that modifies `feature.txt`)
-before the commit that creates the file produces a real conflict, since `main`
-has no `feature.txt` to modify yet:
+Picking a later commit before the one that creates the file conflicts, since `main` has nothing to modify yet:
 
 ```
 $ git cherry-pick f103009
 CONFLICT (modify/delete): feature.txt deleted in HEAD and modified in f103009
-(feature: important fix to cherry-pick). Version f103009 of feature.txt left
-in tree.
 error: could not apply f103009... feature: important fix to cherry-pick
 ```
 
-Resolved with `git cherry-pick --abort` and re-picked in the correct order —
-a reminder that cherry-pick applies a single commit's *diff*, not its full
-file history, so picking commits out of dependency order can conflict.
+Aborted with `git cherry-pick --abort` and re-picked in the right order — cherry-pick applies one commit's diff, not its history, so order matters.
