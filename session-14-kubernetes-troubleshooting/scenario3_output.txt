@@ -1,0 +1,29 @@
+=== Scenario 3: Pending ===
+$ kubectl apply -f scenario-3-pending/broken.yaml
+pod/fail-3-pending-pod created
+
+$ kubectl get pod fail-3-pending-pod
+NAME                 READY   STATUS    RESTARTS   AGE
+fail-3-pending-pod   0/1     Pending   0          8s
+
+$ kubectl describe pod fail-3-pending-pod | tail -6
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason            Age   From               Message
+  ----     ------            ----  ----               -------
+  Warning  FailedScheduling  8s    default-scheduler  0/1 nodes are available: 1 Insufficient cpu, 1 Insufficient memory. preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling.
+
+--- ROOT CAUSE: requesting 500 CPU cores + 1000Gi memory, far beyond any node's capacity ---
+--- FIX: lower the resource request to something the node can actually satisfy ---
+Warning: Immediate deletion does not wait for confirmation that the running resource has been terminated. The resource may continue to run on the cluster indefinitely.
+pod "fail-3-pending-pod" force deleted from default namespace
+error: unknown flag: --requests
+See 'kubectl run --help' for usage.
+$ kubectl get pod fail-3-pending-pod
+Error from server (NotFound): pods "fail-3-pending-pod" not found
+$ kubectl apply -f fixed-pending.yaml   (cpu 500 -> 100m, memory 1000Gi -> 64Mi)
+pod/fail-3-pending-pod created
+$ kubectl get pod fail-3-pending-pod
+NAME                 READY   STATUS              RESTARTS   AGE
+fail-3-pending-pod   0/1     ContainerCreating   0          5s

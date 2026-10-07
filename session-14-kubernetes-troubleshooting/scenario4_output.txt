@@ -1,0 +1,19 @@
+=== Scenario 4: DNS / Service connectivity failure ===
+$ kubectl apply -f scenario-4-dns-failure/broken.yaml
+pod/fail-4-dns-failure-pod created
+
+$ kubectl logs fail-4-dns-failure-pod
+Attempting connection to internal database...
+Process sleeping...
+
+$ kubectl exec fail-4-dns-failure-pod -- nslookup postgres-db-wrong-name.production.svc.cluster.local
+Server:		10.96.0.10
+Address:	10.96.0.10:53
+
+** server can't find postgres-db-wrong-name.production.svc.cluster.local: NXDOMAIN
+
+** server can't find postgres-db-wrong-name.production.svc.cluster.local: NXDOMAIN
+
+command terminated with exit code 1
+
+--- ROOT CAUSE: hostname has a typo / references a service that doesn't exist (no namespace 'production', no such service) ---

@@ -1,0 +1,36 @@
+=== Scenario 1: CrashLoopBackOff ===
+$ kubectl apply -f scenario-1-crashloop/broken.yaml
+pod/fail-1-crashloop-pod created
+
+$ kubectl get pod fail-1-crashloop-pod
+NAME                   READY   STATUS    RESTARTS   AGE
+fail-1-crashloop-pod   1/1     Running   0          10s
+
+$ kubectl logs fail-1-crashloop-pod
+
+--- ROOT CAUSE: missing DATABASE_URL env var, app exits 1 ---
+--- FIX: add the env var and reapply ---
+$ kubectl get pod fail-1-crashloop-pod
+NAME                   READY   STATUS   RESTARTS      AGE
+fail-1-crashloop-pod   0/1     Error    2 (24s ago)   34s
+
+$ kubectl logs fail-1-crashloop-pod
+[FATAL ERROR]: DATABASE_URL environment variable is MISSING!
+
+$ kubectl describe pod fail-1-crashloop-pod | tail -8
+  ----     ------     ----               ----               -------
+  Normal   Scheduled  34s                default-scheduler  Successfully assigned default/fail-1-crashloop-pod to minikube
+  Normal   Pulling    33s                kubelet            spec.containers{python-app}: Pulling image "python:3.11-alpine"
+  Normal   Pulled     24s                kubelet            spec.containers{python-app}: Successfully pulled image "python:3.11-alpine" in 9.304s (9.304s including waiting). Image size: 23808448 bytes.
+  Normal   Created    12s (x3 over 24s)  kubelet            spec.containers{python-app}: Container created
+  Normal   Started    12s (x3 over 24s)  kubelet            spec.containers{python-app}: Container started
+  Normal   Pulled     12s (x2 over 24s)  kubelet            spec.containers{python-app}: Container image "python:3.11-alpine" already present on machine and can be accessed by the pod
+  Warning  BackOff    11s (x3 over 23s)  kubelet            spec.containers{python-app}: Back-off restarting failed container python-app in pod fail-1-crashloop-pod_default(7f6d89fd-54d2-4b16-8d3e-7fb02510285e)
+$ kubectl run fail-1-crashloop-pod --image=python:3.11-alpine --env="DATABASE_URL=postgres://db:5432/app" -- python3 -c 'import os,sys; print("Application started successfully!")'
+pod/fail-1-crashloop-pod created
+
+$ kubectl get pod fail-1-crashloop-pod
+NAME                   READY   STATUS      RESTARTS   AGE
+fail-1-crashloop-pod   0/1     Completed   0          5s
+$ kubectl logs fail-1-crashloop-pod
+Application started successfully!

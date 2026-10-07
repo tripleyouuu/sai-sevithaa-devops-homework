@@ -1,0 +1,143 @@
+$ kubectl apply -f 01-kubectl-get/pod.yaml -f 03-kubectl-logs/pod.yaml -f 04-kubectl-exec/pod.yaml -f 05-events/pod.yaml
+pod/get-demo created
+pod/logs-demo created
+pod/exec-demo created
+pod/events-demo created
+
+=== kubectl get ===
+$ kubectl get pods
+NAME          READY   STATUS    RESTARTS   AGE
+events-demo   1/1     Running   0          8s
+exec-demo     1/1     Running   0          8s
+get-demo      1/1     Running   0          8s
+logs-demo     1/1     Running   0          8s
+
+$ kubectl get pods -o wide
+NAME          READY   STATUS    RESTARTS   AGE   IP             NODE       NOMINATED NODE   READINESS GATES
+events-demo   1/1     Running   0          8s    10.244.0.132   minikube   <none>           <none>
+exec-demo     1/1     Running   0          8s    10.244.0.130   minikube   <none>           <none>
+get-demo      1/1     Running   0          8s    10.244.0.131   minikube   <none>           <none>
+logs-demo     1/1     Running   0          8s    10.244.0.129   minikube   <none>           <none>
+
+=== kubectl describe ===
+$ kubectl describe pod get-demo | head -20
+Name:             get-demo
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             minikube/192.168.49.2
+Start Time:       Wed, 07 Oct 2026 23:13:22 +0800
+Labels:           app=get-demo
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.131
+IPs:
+  IP:  10.244.0.131
+Containers:
+  nginx:
+    Container ID:   containerd://9ff35307ff6f0163b058af8e64072012e22ba0aaae38a128d4c93ab276bb7ef3
+    Image:          nginx:1.27
+    Image ID:       docker.io/library/nginx@sha256:6784fb0834aa7dbbe12e3d7471e69c290df3e6ba810dc38b34ae33d3c1c05f7d
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Running
+
+=== kubectl logs ===
+$ kubectl logs logs-demo
+Application started
+Connecting to database...
+Database connection successful
+Application is running
+Application is healthy
+Application is healthy
+
+=== kubectl exec ===
+$ kubectl exec get-demo -- nginx -v
+nginx version: nginx/1.27.5
+
+=== kubectl events ===
+$ kubectl get events --sort-by=.lastTimestamp | tail -8
+7s          Normal    Created                        pod/get-demo                                Container created
+7s          Normal    Created                        pod/exec-demo                               Container created
+7s          Normal    Started                        pod/logs-demo                               Container started
+7s          Normal    Pulled                         pod/logs-demo                               Container image "busybox:1.36" already present on machine and can be accessed by the pod
+7s          Normal    Started                        pod/events-demo                             Container started
+7s          Normal    Created                        pod/events-demo                             Container created
+7s          Normal    Pulled                         pod/events-demo                             Container image "nginx:1.27" already present on machine and can be accessed by the pod
+7s          Normal    Created                        pod/logs-demo                               Container created
+
+=== kubectl explain ===
+$ kubectl explain pod.spec.containers.livenessProbe
+KIND:       Pod
+VERSION:    v1
+
+FIELD: livenessProbe <Probe>
+
+
+DESCRIPTION:
+    Periodic probe of container liveness. Container will be restarted if the
+    probe fails. Cannot be updated. More info:
+    https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+    Probe describes a health check to be performed against a container to
+    determine whether it is alive or ready to receive traffic.
+    
+FIELDS:
+  exec	<ExecAction>
+    Exec specifies a command to execute in the container.
+
+  failureThreshold	<integer>
+    Minimum consecutive failures for the probe to be considered failed after
+    having succeeded. Defaults to 3. Minimum value is 1.
+
+  grpc	<GRPCAction>
+    GRPC specifies a GRPC HealthCheckRequest.
+
+  httpGet	<HTTPGetAction>
+    HTTPGet specifies an HTTP GET request to perform.
+
+  initialDelaySeconds	<integer>
+    Number of seconds after the container has started before liveness probes are
+    initiated. More info:
+    https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+
+  periodSeconds	<integer>
+    How often (in seconds) to perform the probe. Default to 10 seconds. Minimum
+    value is 1.
+
+  successThreshold	<integer>
+    Minimum consecutive successes for the probe to be considered successful
+    after having failed. Defaults to 1. Must be 1 for liveness and startup.
+    Minimum value is 1.
+
+  tcpSocket	<TCPSocketAction>
+    TCPSocket specifies a connection to a TCP port.
+
+  terminationGracePeriodSeconds	<integer>
+    Optional duration in seconds the pod needs to terminate gracefully upon
+    probe failure. The grace period is the duration in seconds after the
+    processes running in the pod are sent a termination signal and the time when
+    the processes are forcibly halted with a kill signal. Set this value longer
+    than the expected cleanup time for your process. If this value is nil, the
+    pod's terminationGracePeriodSeconds will be used. Otherwise, this value
+    overrides the value provided by the pod spec. Value must be non-negative
+    integer. The value zero indicates stop immediately via the kill signal (no
+    opportunity to shut down). This is a beta field and requires enabling
+    ProbeTerminationGracePeriod feature gate. Minimum value is 1.
+    spec.terminationGracePeriodSeconds is used if unset.
+
+  timeoutSeconds	<integer>
+    Number of seconds after which the probe times out. Defaults to 1 second.
+    Minimum value is 1. More info:
+    https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+
+
+
+=== kubectl top ===
+$ kubectl top pods
+error: metrics not available yet
+$ kubectl top pods (retry)
+NAME          CPU(cores)   MEMORY(bytes)   
+events-demo   1m           2Mi             
+exec-demo     3m           2Mi             
+get-demo      2m           2Mi             
+logs-demo     1m           0Mi             

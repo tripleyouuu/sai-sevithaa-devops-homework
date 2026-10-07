@@ -1,0 +1,35 @@
+=== Scenario 5: OOMKilled ===
+$ kubectl apply -f scenario-5-oomkilled/broken.yaml
+pod/fail-5-oomkilled-pod created
+
+$ kubectl get pod fail-5-oomkilled-pod
+NAME                   READY   STATUS      RESTARTS     AGE
+fail-5-oomkilled-pod   0/1     OOMKilled   1 (9s ago)   10s
+
+$ kubectl describe pod fail-5-oomkilled-pod | grep -A6 'Last State\|State:'
+    State:          Terminated
+      Reason:       OOMKilled
+      Exit Code:    137
+      Started:      Wed, 07 Oct 2026 23:16:32 +0800
+      Finished:     Wed, 07 Oct 2026 23:16:32 +0800
+    Last State:     Terminated
+      Reason:       OOMKilled
+      Exit Code:    137
+      Started:      Wed, 07 Oct 2026 23:16:31 +0800
+      Finished:     Wed, 07 Oct 2026 23:16:31 +0800
+    Ready:          False
+    Restart Count:  1
+
+--- ROOT CAUSE: container tries to allocate ~200MB of memory, limit is set to only 20Mi ---
+--- FIX: raise the memory limit to something that fits the workload ---
+$ kubectl apply -f fixed-oom.yaml   (memory limit 20Mi -> 256Mi)
+pod/fail-5-oomkilled-pod created
+$ kubectl get pod fail-5-oomkilled-pod
+NAME                   READY   STATUS      RESTARTS     AGE
+fail-5-oomkilled-pod   0/1     OOMKilled   1 (7s ago)   8s
+--- 256Mi still wasn't enough: the loop actually allocates up to 100 x 10MB = ~1000MB total, not 200MB as the comment implied ---
+$ kubectl apply -f fixed-oom.yaml   (memory limit -> 1200Mi)
+pod/fail-5-oomkilled-pod created
+$ kubectl get pod fail-5-oomkilled-pod
+NAME                   READY   STATUS      RESTARTS     AGE
+fail-5-oomkilled-pod   0/1     Completed   1 (9s ago)   10s

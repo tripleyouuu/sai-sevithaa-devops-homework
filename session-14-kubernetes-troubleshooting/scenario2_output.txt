@@ -1,0 +1,26 @@
+=== Scenario 2: ImagePullBackOff ===
+$ kubectl apply -f scenario-2-imagepull/broken.yaml
+pod/fail-2-imagepull-pod created
+
+$ kubectl get pod fail-2-imagepull-pod
+NAME                   READY   STATUS         RESTARTS   AGE
+fail-2-imagepull-pod   0/1     ErrImagePull   0          10s
+
+$ kubectl describe pod fail-2-imagepull-pod | tail -8
+  Type     Reason     Age   From               Message
+  ----     ------     ----  ----               -------
+  Normal   Scheduled  10s   default-scheduler  Successfully assigned default/fail-2-imagepull-pod to minikube
+  Normal   Pulling    9s    kubelet            spec.containers{web-app}: Pulling image "yatri-api-service:v999-invalid-tag-does-not-exist"
+  Warning  Failed     8s    kubelet            spec.containers{web-app}: Failed to pull image "yatri-api-service:v999-invalid-tag-does-not-exist": failed to pull and unpack image "docker.io/library/yatri-api-service:v999-invalid-tag-does-not-exist": failed to resolve reference "docker.io/library/yatri-api-service:v999-invalid-tag-does-not-exist": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed
+  Warning  Failed     8s    kubelet            spec.containers{web-app}: Error: ErrImagePull
+  Normal   BackOff    8s    kubelet            spec.containers{web-app}: Back-off pulling image "yatri-api-service:v999-invalid-tag-does-not-exist"
+  Warning  Failed     8s    kubelet            spec.containers{web-app}: Error: ImagePullBackOff
+
+--- ROOT CAUSE: 'yatri-api-service:v999-invalid-tag-does-not-exist' is not a real image/tag ---
+--- FIX: use a real public image ---
+Warning: Immediate deletion does not wait for confirmation that the running resource has been terminated. The resource may continue to run on the cluster indefinitely.
+pod "fail-2-imagepull-pod" force deleted from default namespace
+pod/fail-2-imagepull-pod created
+$ kubectl get pod fail-2-imagepull-pod
+NAME                   READY   STATUS    RESTARTS   AGE
+fail-2-imagepull-pod   1/1     Running   0          6s

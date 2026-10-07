@@ -1,0 +1,75 @@
+=== 1-4: Deploy and verify ===
+$ kubectl apply -f deployment.yaml -f service.yaml
+deployment.apps/troubleshooting-app created
+service/troubleshooting-service created
+
+$ kubectl get pods -o wide
+NAME                                   READY   STATUS    RESTARTS   AGE   IP             NODE       NOMINATED NODE   READINESS GATES
+troubleshooting-app-59d4957864-9c6ht   1/1     Running   0          8s    10.244.0.143   minikube   <none>           <none>
+troubleshooting-app-59d4957864-gdxhz   1/1     Running   0          8s    10.244.0.142   minikube   <none>           <none>
+
+$ kubectl exec troubleshooting-app-59d4957864-9c6ht -- curl -s localhost
+<!DOCTYPE html>
+<html>
+<head>
+
+$ kubectl get service
+NAME                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+kubernetes                ClusterIP   10.96.0.1        <none>        443/TCP   83m
+troubleshooting-service   ClusterIP   10.108.222.221   <none>        80/TCP    8s
+
+$ kubectl describe service troubleshooting-service | grep -E 'Selector|TargetPort'
+Selector:                 app=troubleshooting-app
+TargetPort:               80/TCP
+
+$ kubectl get endpoints troubleshooting-service
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                      ENDPOINTS                         AGE
+troubleshooting-service   10.244.0.142:80,10.244.0.143:80   8s
+=== 5-7: Broken pod ===
+$ kubectl apply -f broken-pod.yaml
+pod/project-broken-pod created
+
+$ kubectl get pod project-broken-pod
+NAME                 READY   STATUS         RESTARTS   AGE
+project-broken-pod   0/1     ErrImagePull   0          10s
+
+$ kubectl describe pod project-broken-pod | tail -8
+  Type     Reason     Age   From               Message
+  ----     ------     ----  ----               -------
+  Normal   Scheduled  10s   default-scheduler  Successfully assigned default/project-broken-pod to minikube
+  Normal   Pulling    9s    kubelet            spec.containers{app}: Pulling image "nginx:this-tag-does-not-exist"
+  Warning  Failed     7s    kubelet            spec.containers{app}: Failed to pull image "nginx:this-tag-does-not-exist": rpc error: code = NotFound desc = failed to pull and unpack image "docker.io/library/nginx:this-tag-does-not-exist": failed to resolve reference "docker.io/library/nginx:this-tag-does-not-exist": docker.io/library/nginx:this-tag-does-not-exist: not found
+  Warning  Failed     7s    kubelet            spec.containers{app}: Error: ErrImagePull
+  Normal   BackOff    7s    kubelet            spec.containers{app}: Back-off pulling image "nginx:this-tag-does-not-exist"
+  Warning  Failed     7s    kubelet            spec.containers{app}: Error: ImagePullBackOff
+
+=== 8-9: Service selector mismatch ===
+$ kubectl patch service troubleshooting-service -p '{"spec":{"selector":{"app":"wrong-app"}}}'
+service/troubleshooting-service patched
+
+$ kubectl get service
+NAME                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+troubleshooting-service   ClusterIP   10.108.222.221   <none>        80/TCP    39s
+
+$ kubectl get endpoints troubleshooting-service
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                      ENDPOINTS   AGE
+troubleshooting-service   <none>      39s
+
+$ kubectl get pods --show-labels
+NAME                                   READY   STATUS    RESTARTS   AGE   LABELS
+troubleshooting-app-59d4957864-9c6ht   1/1     Running   0          40s   app=troubleshooting-app,pod-template-hash=59d4957864
+troubleshooting-app-59d4957864-gdxhz   1/1     Running   0          40s   app=troubleshooting-app,pod-template-hash=59d4957864
+
+$ kubectl describe service troubleshooting-service | grep Selector
+Selector:                 app=wrong-app
+
+--- MISMATCH FOUND: Service selector is app=wrong-app, but Pods are labeled app=troubleshooting-app ---
+$ kubectl patch service troubleshooting-service -p '{"spec":{"selector":{"app":"troubleshooting-app"}}}'
+service/troubleshooting-service patched
+
+$ kubectl get endpoints troubleshooting-service
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                      ENDPOINTS                         AGE
+troubleshooting-service   10.244.0.142:80,10.244.0.143:80   43s
