@@ -1,0 +1,23 @@
+=== 09-startup.yaml (lifecycle-startup) ===
+$ kubectl apply -f 09-startup.yaml
+pod/lifecycle-startup created
+
+$ kubectl get pod lifecycle-startup   (right after creation, startup probe not yet passed)
+NAME                READY   STATUS    RESTARTS   AGE
+lifecycle-startup   0/1     Running   0          3s
+
+$ kubectl describe pod lifecycle-startup | grep -A5 'Startup:'
+    Startup:        exec [sh -c test -f /tmp/started] delay=0s timeout=1s period=5s successThreshold=1 failureThreshold=10
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-mb2kc (ro)
+Conditions:
+  Type                        Status
+
+--- waiting for the 30s startup sleep to finish ---
+$ kubectl get pod lifecycle-startup   (after startup probe passes)
+NAME                READY   STATUS    RESTARTS   AGE
+lifecycle-startup   0/1     Running   0          35s
+$ kubectl get pod lifecycle-startup  (final)
+NAME                READY   STATUS    RESTARTS   AGE
+lifecycle-startup   1/1     Running   0          52s

@@ -1,0 +1,83 @@
+=== 07-readiness.yaml (lifecycle-readiness) ===
+$ kubectl apply -f 07-readiness.yaml
+pod/lifecycle-readiness created
+$ kubectl get pod lifecycle-readiness
+NAME                  READY   STATUS    RESTARTS   AGE
+lifecycle-readiness   1/1     Running   0          8s
+$ kubectl describe pod lifecycle-readiness | tail -12
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  8s    default-scheduler  Successfully assigned default/lifecycle-readiness to minikube
+  Normal  Pulled     8s    kubelet            spec.containers{nginx}: Container image "nginx:1.27" already present on machine and can be accessed by the pod
+  Normal  Created    8s    kubelet            spec.containers{nginx}: Container created
+  Normal  Started    8s    kubelet            spec.containers{nginx}: Container started
+
+=== 08-liveness.yaml (lifecycle-liveness) ===
+$ kubectl apply -f 08-liveness.yaml
+pod/lifecycle-liveness created
+$ kubectl get pod lifecycle-liveness
+NAME                 READY   STATUS    RESTARTS   AGE
+lifecycle-liveness   1/1     Running   0          8s
+$ kubectl describe pod lifecycle-liveness | tail -12
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  8s    default-scheduler  Successfully assigned default/lifecycle-liveness to minikube
+  Normal  Pulled     8s    kubelet            spec.containers{app}: Container image "busybox:1.36" already present on machine and can be accessed by the pod
+  Normal  Created    8s    kubelet            spec.containers{app}: Container created
+  Normal  Started    8s    kubelet            spec.containers{app}: Container started
+
+=== 10-init-container.yaml (lifecycle-init) ===
+$ kubectl apply -f 10-init-container.yaml
+pod/lifecycle-init created
+$ kubectl get pod lifecycle-init
+NAME             READY   STATUS     RESTARTS   AGE
+lifecycle-init   0/1     Init:0/1   0          8s
+$ kubectl describe pod lifecycle-init | tail -12
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  8s    default-scheduler  Successfully assigned default/lifecycle-init to minikube
+  Normal  Pulled     7s    kubelet            spec.initContainers{setup}: Container image "busybox:1.36" already present on machine and can be accessed by the pod
+  Normal  Created    7s    kubelet            spec.initContainers{setup}: Container created
+  Normal  Started    7s    kubelet            spec.initContainers{setup}: Container started
+
+=== 11-multi-container.yaml (lifecycle-multi-container) ===
+$ kubectl apply -f 11-multi-container.yaml
+pod/lifecycle-multi-container created
+$ kubectl get pod lifecycle-multi-container
+NAME                        READY   STATUS    RESTARTS   AGE
+lifecycle-multi-container   2/2     Running   0          8s
+$ kubectl describe pod lifecycle-multi-container | tail -12
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  8s    default-scheduler  Successfully assigned default/lifecycle-multi-container to minikube
+  Normal  Pulled     8s    kubelet            spec.containers{app}: Container image "nginx:1.27" already present on machine and can be accessed by the pod
+  Normal  Created    8s    kubelet            spec.containers{app}: Container created
+  Normal  Started    8s    kubelet            spec.containers{app}: Container started
+  Normal  Pulled     8s    kubelet            spec.containers{sidecar}: Container image "busybox:1.36" already present on machine and can be accessed by the pod
+  Normal  Created    8s    kubelet            spec.containers{sidecar}: Container created
+  Normal  Started    8s    kubelet            spec.containers{sidecar}: Container started
+
+$ kubectl get pod lifecycle-init  (after init container finishes)
+NAME             READY   STATUS    RESTARTS   AGE
+lifecycle-init   1/1     Running   0          32s

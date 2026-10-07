@@ -1,0 +1,32 @@
+$ kubectl apply -f 04-recreate/deployment-v1.yaml -f 04-recreate/service.yaml
+deployment.apps/app-recreate created
+service/app-recreate-service created
+
+$ kubectl get pods -l app=app-recreate
+NAME                            READY   STATUS    RESTARTS   AGE
+app-recreate-6c78cb55bb-cbtfh   1/1     Running   0          8s
+app-recreate-6c78cb55bb-nl54k   1/1     Running   0          8s
+app-recreate-6c78cb55bb-xds5l   1/1     Running   0          8s
+
+$ kubectl apply -f 04-recreate/deployment-v2.yaml  (watch old pods die before new ones appear)
+deployment.apps/app-recreate configured
+NAME                            READY   STATUS    RESTARTS   AGE
+app-recreate-7bd8d89b8b-kbffq   1/1     Running   0          0s
+app-recreate-7bd8d89b8b-mpv7p   1/1     Running   0          0s
+app-recreate-7bd8d89b8b-qqv8k   1/1     Running   0          0s
+NAME                            READY   STATUS    RESTARTS   AGE
+app-recreate-7bd8d89b8b-kbffq   1/1     Running   0          2s
+app-recreate-7bd8d89b8b-mpv7p   1/1     Running   0          2s
+app-recreate-7bd8d89b8b-qqv8k   1/1     Running   0          2s
+NAME                            READY   STATUS    RESTARTS   AGE
+app-recreate-7bd8d89b8b-kbffq   1/1     Running   0          4s
+app-recreate-7bd8d89b8b-mpv7p   1/1     Running   0          4s
+app-recreate-7bd8d89b8b-qqv8k   1/1     Running   0          4s
+
+$ kubectl rollout status deployment/app-recreate
+deployment "app-recreate" successfully rolled out
+
+NAME                            READY   STATUS    RESTARTS   AGE
+app-recreate-7bd8d89b8b-kbffq   1/1     Running   0          8s
+app-recreate-7bd8d89b8b-mpv7p   1/1     Running   0          8s
+app-recreate-7bd8d89b8b-qqv8k   1/1     Running   0          8s

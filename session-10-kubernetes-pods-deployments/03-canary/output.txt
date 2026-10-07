@@ -1,0 +1,20 @@
+--- port-forward only hits one pod per connection, so testing from inside the cluster instead ---
+$ kubectl run curl-test --image=curlimages/curl --restart=Never --rm -i --command -- sh -c 'for i in $(seq 1 20); do curl -s http://myapp-canary-service/; done'
+Track: stable
+All commands and output from this session will be recorded in container logs, including credentials and sensitive information passed through the command prompt.
+If you don't see a command prompt, try pressing enter.
+Track: stable
+Track: stable
+Track: stable
+Track: stable
+Track: stable
+Track: stable
+Track: stable
+Track: stable
+Track: stable
+Track: stable
+Track: canary
+Track: canary
+Track: stable
+Track: stable
+pod "curl-test" deleted from default namespace

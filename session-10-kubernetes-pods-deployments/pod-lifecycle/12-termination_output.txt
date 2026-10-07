@@ -1,0 +1,13 @@
+=== 12-termination.yaml (lifecycle-termination) ===
+$ kubectl apply -f 12-termination.yaml
+pod/lifecycle-termination created
+
+$ kubectl logs lifecycle-termination
+Application running
+
+$ kubectl delete pod lifecycle-termination   (terminationGracePeriodSeconds: 20, trap sleeps 10s)
+pod "lifecycle-termination" deleted from default namespace
+kubectl delete pod lifecycle-termination  0.04s user 0.02s system 0% cpu 10.907 total
+
+$ kubectl logs lifecycle-termination --previous   (grab the trap's cleanup output before it's gone)
+error: error from server (NotFound): pods "lifecycle-termination" not found in namespace "default"

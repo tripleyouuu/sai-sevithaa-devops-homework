@@ -1,0 +1,27 @@
+$ kubectl apply -f 02-blue-green/deployment-blue.yaml -f 02-blue-green/deployment-green.yaml -f 02-blue-green/service-blue.yaml
+deployment.apps/app-blue created
+deployment.apps/app-green created
+service/myapp-service created
+
+$ kubectl get pods -l app=myapp --show-labels
+NAME                        READY   STATUS    RESTARTS   AGE   LABELS
+app-blue-5c69d7785c-cs7wx   1/1     Running   0          8s    app=myapp,pod-template-hash=5c69d7785c,slot=blue,version=v1
+app-blue-5c69d7785c-gpvtn   1/1     Running   0          8s    app=myapp,pod-template-hash=5c69d7785c,slot=blue,version=v1
+app-blue-5c69d7785c-mzjhl   1/1     Running   0          8s    app=myapp,pod-template-hash=5c69d7785c,slot=blue,version=v1
+app-green-84df7f978-2nhl4   1/1     Running   0          8s    app=myapp,pod-template-hash=84df7f978,slot=green,version=v2
+app-green-84df7f978-cp9l7   1/1     Running   0          8s    app=myapp,pod-template-hash=84df7f978,slot=green,version=v2
+app-green-84df7f978-fz5z9   1/1     Running   0          8s    app=myapp,pod-template-hash=84df7f978,slot=green,version=v2
+
+$ kubectl get svc myapp-service -o jsonpath='{.spec.selector}'
+{"app":"myapp","slot":"blue"}
+
+--- port-forward to service, verify BLUE is active ---
+<p style="font-size:0.5em">Version: v1 | Slot: BLUE (LIVE)</p>
+$ kubectl apply -f 02-blue-green/service-green.yaml
+service/myapp-service configured
+
+$ kubectl get svc myapp-service -o jsonpath='{.spec.selector}'
+{"app":"myapp","slot":"green"}
+
+--- verify GREEN is now active ---
+<p style="font-size:0.5em">Version: v2 | Slot: GREEN (STANDBY -> PROMOTED)</p>

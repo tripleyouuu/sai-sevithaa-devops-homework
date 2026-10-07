@@ -1,0 +1,153 @@
+=== 01-running.yaml (lifecycle-running) ===
+$ kubectl apply -f 01-running.yaml
+pod/lifecycle-running created
+$ kubectl get pod lifecycle-running
+NAME                READY   STATUS              RESTARTS   AGE
+lifecycle-running   0/1     ContainerCreating   0          6s
+$ kubectl describe pod lifecycle-running | tail -15
+  kube-api-access-kkjs5:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  6s    default-scheduler  Successfully assigned default/lifecycle-running to minikube
+  Normal  Pulling    5s    kubelet            spec.containers{nginx}: Pulling image "nginx:1.27"
+
+=== 02-pending.yaml (lifecycle-pending) ===
+$ kubectl apply -f 02-pending.yaml
+pod/lifecycle-pending created
+$ kubectl get pod lifecycle-pending
+NAME                READY   STATUS    RESTARTS   AGE
+lifecycle-pending   0/1     Pending   0          7s
+$ kubectl describe pod lifecycle-pending | tail -15
+Volumes:
+  kube-api-access-vlwwv:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason            Age   From               Message
+  ----     ------            ----  ----               -------
+  Warning  FailedScheduling  7s    default-scheduler  0/1 nodes are available: 1 Insufficient memory. preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling.
+
+=== 03-succeeded.yaml (lifecycle-succeeded) ===
+$ kubectl apply -f 03-succeeded.yaml
+pod/lifecycle-succeeded created
+$ kubectl get pod lifecycle-succeeded
+NAME                  READY   STATUS              RESTARTS   AGE
+lifecycle-succeeded   0/1     ContainerCreating   0          6s
+$ kubectl describe pod lifecycle-succeeded | tail -15
+  kube-api-access-6hn7h:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  6s    default-scheduler  Successfully assigned default/lifecycle-succeeded to minikube
+  Normal  Pulling    6s    kubelet            spec.containers{task}: Pulling image "busybox:1.36"
+
+=== 04-failed.yaml (lifecycle-failed) ===
+$ kubectl apply -f 04-failed.yaml
+pod/lifecycle-failed created
+$ kubectl get pod lifecycle-failed
+NAME               READY   STATUS    RESTARTS   AGE
+lifecycle-failed   1/1     Running   0          6s
+$ kubectl describe pod lifecycle-failed | tail -15
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  6s    default-scheduler  Successfully assigned default/lifecycle-failed to minikube
+  Normal  Pulling    6s    kubelet            spec.containers{task}: Pulling image "busybox:1.36"
+  Normal  Pulled     3s    kubelet            spec.containers{task}: Successfully pulled image "busybox:1.36" in 1.952s (2.898s including waiting). Image size: 1906887 bytes.
+  Normal  Created    3s    kubelet            spec.containers{task}: Container created
+  Normal  Started    3s    kubelet            spec.containers{task}: Container started
+
+=== 05-crashloopbackoff.yaml (lifecycle-crashloop) ===
+$ kubectl apply -f 05-crashloopbackoff.yaml
+pod/lifecycle-crashloop created
+$ kubectl get pod lifecycle-crashloop
+NAME                  READY   STATUS    RESTARTS     AGE
+lifecycle-crashloop   1/1     Running   1 (2s ago)   6s
+$ kubectl describe pod lifecycle-crashloop | tail -15
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age              From               Message
+  ----    ------     ----             ----               -------
+  Normal  Scheduled  6s               default-scheduler  Successfully assigned default/lifecycle-crashloop to minikube
+  Normal  Pulled     2s (x2 over 5s)  kubelet            spec.containers{crashing-app}: Container image "busybox:1.36" already present on machine and can be accessed by the pod
+  Normal  Created    2s (x2 over 5s)  kubelet            spec.containers{crashing-app}: Container created
+  Normal  Started    1s (x2 over 5s)  kubelet            spec.containers{crashing-app}: Container started
+
+=== 06-imagepullbackoff.yaml (lifecycle-image-error) ===
+$ kubectl apply -f 06-imagepullbackoff.yaml
+pod/lifecycle-image-error created
+$ kubectl get pod lifecycle-image-error
+NAME                    READY   STATUS         RESTARTS   AGE
+lifecycle-image-error   0/1     ErrImagePull   0          6s
+$ kubectl describe pod lifecycle-image-error | tail -15
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason     Age   From               Message
+  ----     ------     ----  ----               -------
+  Normal   Scheduled  6s    default-scheduler  Successfully assigned default/lifecycle-image-error to minikube
+  Normal   Pulling    5s    kubelet            spec.containers{broken-image}: Pulling image "jakwehrgkaejw:kahsdfgkhj"
+  Warning  Failed     4s    kubelet            spec.containers{broken-image}: Failed to pull image "jakwehrgkaejw:kahsdfgkhj": failed to pull and unpack image "docker.io/library/jakwehrgkaejw:kahsdfgkhj": failed to resolve reference "docker.io/library/jakwehrgkaejw:kahsdfgkhj": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed
+  Warning  Failed     4s    kubelet            spec.containers{broken-image}: Error: ErrImagePull
+  Normal   BackOff    4s    kubelet            spec.containers{broken-image}: Back-off pulling image "jakwehrgkaejw:kahsdfgkhj"
+  Warning  Failed     4s    kubelet            spec.containers{broken-image}: Error: ImagePullBackOff
+
+NAME                    READY   STATUS             RESTARTS      AGE
+lifecycle-running       1/1     Running            0             51s
+lifecycle-succeeded     0/1     Completed          0             38s
+lifecycle-failed        0/1     Error              0             32s
+lifecycle-crashloop     0/1     Error              2 (18s ago)   26s
+lifecycle-pending       0/1     Pending            0             45s
+lifecycle-image-error   0/1     ImagePullBackOff   0             20s
+=== final states ===
+NAME                    READY   STATUS             RESTARTS      AGE
+lifecycle-running       1/1     Running            0             51s
+lifecycle-succeeded     0/1     Completed          0             38s
+lifecycle-failed        0/1     Error              0             32s
+lifecycle-crashloop     0/1     Error              2 (18s ago)   26s
+lifecycle-pending       0/1     Pending            0             45s
+lifecycle-image-error   0/1     ImagePullBackOff   0             20s
