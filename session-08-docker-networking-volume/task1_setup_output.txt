@@ -1,0 +1,20 @@
+$ docker network create net1
+2942ab35c090485e0b92f7d1d9e08d00e034d8ed8d816e18b59bce6acd092b01
+$ docker network create net2
+ef478095855f086c99b578cb3824e32c149a20bb666713e69cafc8f9f6a8f255
+$ docker network create net3
+2f283171f3549acaf0d6dea02e91cb665719bfb2a5c9378be77b613167a26fe2
+
+$ docker run -d --name frontend --network net1 nginx:alpine
+79fd5110e58846bec1b2967b207a1b44df8b61bbad95f41fdbf1811062b7e710
+$ docker run -d --name database --network net2 -e MYSQL_ROOT_PASSWORD=root mysql:8.0
+211f2ac0f7ab60f6bff2cfb69370583348605feea658955c0cf4da271463db70
+$ docker run -d --name backend --network net1 nginx:alpine
+a61b678cab7156374aa25c89f548637391bec17e922af8c2031e7a6246e5f67e
+$ docker network connect net2 backend
+
+$ docker network inspect net1 --format '{{range .Containers}}{{.Name}} {{end}}'
+frontend backend 
+
+$ docker network inspect net2 --format '{{range .Containers}}{{.Name}} {{end}}'
+database backend 

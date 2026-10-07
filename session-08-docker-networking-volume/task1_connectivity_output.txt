@@ -1,0 +1,20 @@
+$ docker exec frontend ping -c 2 backend
+PING backend (172.18.0.3): 56 data bytes
+64 bytes from 172.18.0.3: seq=0 ttl=64 time=0.133 ms
+64 bytes from 172.18.0.3: seq=1 ttl=64 time=0.114 ms
+
+--- backend ping statistics ---
+2 packets transmitted, 2 packets received, 0% packet loss
+round-trip min/avg/max = 0.114/0.123/0.133 ms
+
+$ docker exec backend ping -c 2 database
+PING database (172.19.0.2): 56 data bytes
+64 bytes from 172.19.0.2: seq=0 ttl=64 time=0.084 ms
+64 bytes from 172.19.0.2: seq=1 ttl=64 time=0.165 ms
+
+--- database ping statistics ---
+2 packets transmitted, 2 packets received, 0% packet loss
+round-trip min/avg/max = 0.084/0.124/0.165 ms
+
+$ docker exec frontend ping -c 2 database   (should fail, frontend is not on net2)
+ping: bad address 'database'

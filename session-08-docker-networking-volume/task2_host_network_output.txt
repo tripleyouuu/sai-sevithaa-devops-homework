@@ -1,0 +1,14 @@
+$ docker pull httpd
+Digest: sha256:c842ac797bd1fe8b3cd26d002ac9d948aa2814097544600600b35aef42e6785a
+Status: Image is up to date for httpd:latest
+docker.io/library/httpd:latest
+
+$ docker run -d --name apache-host --network host httpd
+405a6f14ba3128183da73e9e08afcdfc1c5d32cdd002cec1dac7a7814085bf73
+
+$ curl -s http://localhost:80/ | head -5
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>It works! Apache httpd</title>
+</head>
