@@ -1,0 +1,17 @@
+$ curl -X POST http://localhost:8000/api/tasks -H 'Content-Type: application/json' -d '{"title":"Write session 21 README","priority":"HIGH","assignee":"Vitha"}'
+{"title":"Write session 21 README","description":"","priority":"HIGH","status":"TODO","assignee":"Vitha","id":1,"created_at":"2026-10-07T16:39:15.808260Z"}
+
+$ curl http://localhost:8000/api/tasks
+[{"title":"Write session 21 README","description":"","priority":"HIGH","status":"TODO","assignee":"Vitha","id":1,"created_at":"2026-10-07T16:39:15.808260Z"}]
+
+$ curl -X PUT http://localhost:8000/api/tasks/1 -H 'Content-Type: application/json' -d '{"status":"IN_PROGRESS"}'
+{"title":"Write session 21 README","description":"","priority":"HIGH","status":"IN_PROGRESS","assignee":"Vitha","id":1,"created_at":"2026-10-07T16:39:15.808260Z"}
+
+$ curl http://localhost:8000/api/tasks/stats
+{"total":1,"todo":0,"inProgress":1,"done":0}
+
+$ curl -X DELETE http://localhost:8000/api/tasks/1 -w '%{http_code}'
+HTTP 204
+
+$ curl http://localhost:8000/api/tasks
+[]

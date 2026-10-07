@@ -1,0 +1,4 @@
+NAME                                   IMAGE                                COMMAND                  SERVICE    CREATED              STATUS              PORTS
+session-21-docker-compose-backend-1    session-21-docker-compose-backend    "sh -c 'alembic upgr…"   backend    About a minute ago   Up About a minute   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+session-21-docker-compose-frontend-1   session-21-docker-compose-frontend   "/docker-entrypoint.…"   frontend   About a minute ago   Up About a minute   0.0.0.0:3000->80/tcp, [::]:3000->80/tcp
+session-21-docker-compose-postgres-1   postgres:16-alpine                   "docker-entrypoint.s…"   postgres   About a minute ago   Up About a minute   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp

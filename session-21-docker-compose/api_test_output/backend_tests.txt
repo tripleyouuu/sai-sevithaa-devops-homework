@@ -1,0 +1,15 @@
+$ curl http://localhost:8000/
+{"service":"TaskBoard API","version":"1.0.0","docs":"/docs"}
+
+$ curl http://localhost:8000/health
+{"status":"UP"}
+
+$ curl http://localhost:8000/ready
+{"status":"READY"}
+
+$ curl http://localhost:8000/api/tasks
+[]
+$ curl http://localhost:3000/api/tasks   (through frontend nginx proxy, not hitting backend directly)
+[{"title":"Add screenshots to README","description":"","priority":"LOW","status":"TODO","assignee":"Vitha","id":4,"created_at":"2026-10-07T16:39:22.987402Z"},{"title":"Test backend APIs","description":"","priority":"MEDIUM","status":"IN_PROGRESS","assignee":"Vitha","id":3,"created_at":"2026-10-07T16:39:22.973574Z"},{"title":"Set up docker-compose stack","description":"","priority":"HIGH","status":"DONE","assignee":"Vitha","id":2,"created_at":"2026-10-07T16:39:22.958784Z"}]
+$ curl http://localhost:3000/health   (through frontend nginx proxy)
+{"status":"UP"}
