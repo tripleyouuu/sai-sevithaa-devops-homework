@@ -1,0 +1,261 @@
+=== t+1x20s ===
+Wed Oct  7 22:55:39 WITA 2026
+$ kubectl top pods -l app=hpa-demo
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-d46vv   1m           2Mi             
+$ kubectl get hpa
+NAME       REFERENCE             TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 1%/50%   1         5         1          104s
+$ kubectl get pods -l app=hpa-demo
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-d46vv   1/1     Running   0          104s
+
+=== t+2x20s ===
+Wed Oct  7 22:56:00 WITA 2026
+$ kubectl top pods -l app=hpa-demo
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-d46vv   33m          3Mi             
+$ kubectl get hpa
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 33%/50%   1         5         1          2m4s
+$ kubectl get pods -l app=hpa-demo
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-d46vv   1/1     Running   0          2m4s
+
+=== t+3x20s ===
+Wed Oct  7 22:56:20 WITA 2026
+$ kubectl top pods -l app=hpa-demo
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-d46vv   33m          3Mi             
+$ kubectl get hpa
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 33%/50%   1         5         1          2m24s
+$ kubectl get pods -l app=hpa-demo
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-d46vv   1/1     Running   0          2m24s
+
+=== t+4x20s ===
+Wed Oct  7 22:56:40 WITA 2026
+$ kubectl top pods -l app=hpa-demo
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-d46vv   33m          3Mi             
+$ kubectl get hpa
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 33%/50%   1         5         1          2m44s
+$ kubectl get pods -l app=hpa-demo
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-d46vv   1/1     Running   0          2m44s
+
+=== t+5x20s ===
+Wed Oct  7 22:57:00 WITA 2026
+$ kubectl top pods -l app=hpa-demo
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-d46vv   26m          3Mi             
+$ kubectl get hpa
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 26%/50%   1         5         1          3m5s
+$ kubectl get pods -l app=hpa-demo
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-d46vv   1/1     Running   0          3m5s
+
+=== t+6x20s ===
+Wed Oct  7 22:57:21 WITA 2026
+$ kubectl top pods -l app=hpa-demo
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-d46vv   26m          3Mi             
+$ kubectl get hpa
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 26%/50%   1         5         1          3m25s
+$ kubectl get pods -l app=hpa-demo
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-d46vv   1/1     Running   0          3m25s
+
+=== t+1x20s (after adding 5 more load generators) ===
+Wed Oct  7 22:57:55 WITA 2026
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-d46vv   26m          3Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 26%/50%   1         5         1          3m59s
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-d46vv   1/1     Running   0          3m59s
+
+=== t+2x20s (after adding 5 more load generators) ===
+Wed Oct  7 22:58:15 WITA 2026
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-d46vv   27m          3Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 27%/50%   1         5         1          4m19s
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-d46vv   1/1     Running   0          4m19s
+
+=== t+3x20s (after adding 5 more load generators) ===
+Wed Oct  7 22:58:35 WITA 2026
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-d46vv   27m          3Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 27%/50%   1         5         1          4m39s
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-d46vv   1/1     Running   0          4m39s
+
+=== t+4x20s (after adding 5 more load generators) ===
+Wed Oct  7 22:58:55 WITA 2026
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-d46vv   32m          3Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 32%/50%   1         5         1          4m59s
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-d46vv   1/1     Running   0          4m59s
+
+=== t+5x20s (after adding 5 more load generators) ===
+Wed Oct  7 22:59:15 WITA 2026
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-d46vv   32m          3Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 32%/50%   1         5         1          5m20s
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-d46vv   1/1     Running   0          5m20s
+
+=== t+6x20s (after adding 5 more load generators) ===
+Wed Oct  7 22:59:36 WITA 2026
+NAME                        CPU(cores)   MEMORY(bytes)   
+hpa-demo-5d6676989b-d46vv   32m          3Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 32%/50%   1         5         1          5m40s
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-d46vv   1/1     Running   0          5m40s
+
+=== t+1x20s (after lowering CPU request to 40m) ===
+Wed Oct  7 23:00:16 WITA 2026
+error: metrics not available yet
+NAME       REFERENCE             TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: <unknown>/50%   1         5         1          6m20s
+NAME                       READY   STATUS    RESTARTS   AGE
+hpa-demo-f85f86798-gl9q2   1/1     Running   0          12s
+
+=== t+2x20s (after lowering CPU request to 40m) ===
+Wed Oct  7 23:00:36 WITA 2026
+error: metrics not available yet
+NAME       REFERENCE             TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: <unknown>/50%   1         5         1          6m40s
+NAME                       READY   STATUS    RESTARTS   AGE
+hpa-demo-f85f86798-gl9q2   1/1     Running   0          32s
+
+=== t+3x20s (after lowering CPU request to 40m) ===
+Wed Oct  7 23:00:56 WITA 2026
+NAME                       CPU(cores)   MEMORY(bytes)   
+hpa-demo-f85f86798-gl9q2   35m          3Mi             
+NAME       REFERENCE             TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: <unknown>/50%   1         5         1          7m
+NAME                       READY   STATUS    RESTARTS   AGE
+hpa-demo-f85f86798-gl9q2   1/1     Running   0          52s
+
+=== t+4x20s (after lowering CPU request to 40m) ===
+Wed Oct  7 23:01:16 WITA 2026
+NAME                       CPU(cores)   MEMORY(bytes)   
+hpa-demo-f85f86798-gl9q2   35m          3Mi             
+NAME       REFERENCE             TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: <unknown>/50%   1         5         1          7m20s
+NAME                       READY   STATUS    RESTARTS   AGE
+hpa-demo-f85f86798-gl9q2   1/1     Running   0          73s
+
+=== t+5x20s (after lowering CPU request to 40m) ===
+Wed Oct  7 23:01:37 WITA 2026
+NAME                       CPU(cores)   MEMORY(bytes)   
+hpa-demo-f85f86798-gl9q2   35m          3Mi             
+NAME       REFERENCE             TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: <unknown>/50%   1         5         1          7m41s
+NAME                       READY   STATUS    RESTARTS   AGE
+hpa-demo-f85f86798-gl9q2   1/1     Running   0          93s
+
+=== t+6x20s (after lowering CPU request to 40m) ===
+Wed Oct  7 23:01:57 WITA 2026
+NAME                       CPU(cores)   MEMORY(bytes)   
+hpa-demo-f85f86798-gl9q2   27m          3Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 67%/50%   1         5         1          8m1s
+NAME                       READY   STATUS    RESTARTS   AGE
+hpa-demo-f85f86798-gb7vh   1/1     Running   0          3s
+hpa-demo-f85f86798-gl9q2   1/1     Running   0          113s
+
+=== scale-out t+1x20s ===
+Wed Oct  7 23:02:25 WITA 2026
+NAME                       CPU(cores)   MEMORY(bytes)   
+hpa-demo-f85f86798-gl9q2   27m          3Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 67%/50%   1         5         2          8m29s
+NAME                       READY   STATUS    RESTARTS   AGE
+hpa-demo-f85f86798-gb7vh   1/1     Running   0          31s
+hpa-demo-f85f86798-gl9q2   1/1     Running   0          2m21s
+
+=== scale-out t+2x20s ===
+Wed Oct  7 23:02:45 WITA 2026
+NAME                       CPU(cores)   MEMORY(bytes)   
+hpa-demo-f85f86798-gl9q2   27m          3Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 67%/50%   1         5         2          8m49s
+NAME                       READY   STATUS    RESTARTS   AGE
+hpa-demo-f85f86798-gb7vh   1/1     Running   0          51s
+hpa-demo-f85f86798-gl9q2   1/1     Running   0          2m41s
+
+=== scale-out t+3x20s ===
+Wed Oct  7 23:03:05 WITA 2026
+NAME                       CPU(cores)   MEMORY(bytes)   
+hpa-demo-f85f86798-gb7vh   18m          3Mi             
+hpa-demo-f85f86798-gl9q2   19m          3Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 46%/50%   1         5         2          9m9s
+NAME                       READY   STATUS    RESTARTS   AGE
+hpa-demo-f85f86798-gb7vh   1/1     Running   0          71s
+hpa-demo-f85f86798-gl9q2   1/1     Running   0          3m1s
+
+=== scale-out t+4x20s ===
+Wed Oct  7 23:03:25 WITA 2026
+NAME                       CPU(cores)   MEMORY(bytes)   
+hpa-demo-f85f86798-gb7vh   18m          3Mi             
+hpa-demo-f85f86798-gl9q2   19m          3Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 46%/50%   1         5         2          9m30s
+NAME                       READY   STATUS    RESTARTS   AGE
+hpa-demo-f85f86798-gb7vh   1/1     Running   0          92s
+hpa-demo-f85f86798-gl9q2   1/1     Running   0          3m22s
+
+=== scale-out t+5x20s ===
+Wed Oct  7 23:03:46 WITA 2026
+NAME                       CPU(cores)   MEMORY(bytes)   
+hpa-demo-f85f86798-gb7vh   18m          3Mi             
+hpa-demo-f85f86798-gl9q2   19m          3Mi             
+NAME       REFERENCE             TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: 46%/50%   1         5         2          9m50s
+NAME                       READY   STATUS    RESTARTS   AGE
+hpa-demo-f85f86798-gb7vh   1/1     Running   0          112s
+hpa-demo-f85f86798-gl9q2   1/1     Running   0          3m42s
+
+$ kubectl describe hpa hpa-demo
+Name:                                                  hpa-demo
+Namespace:                                             default
+Labels:                                                <none>
+Annotations:                                           <none>
+CreationTimestamp:                                     Wed, 07 Oct 2026 22:53:56 +0800
+Reference:                                             Deployment/hpa-demo
+Metrics:                                               ( current / target )
+  resource cpu on pods  (as a percentage of request):  36% (14m) / 50%
+Min replicas:                                          1
+Max replicas:                                          5
+Deployment pods:                                       2 current / 2 desired
+Conditions:
+  Type            Status  Reason              Message
+  ----            ------  ------              -------
+  AbleToScale     True    ReadyForNewScale    recommended size matches current size
+  ScalingActive   True    ValidMetricFound    the HPA was able to successfully calculate a replica count from cpu resource utilization (percentage of request)
+  ScalingLimited  False   DesiredWithinRange  the desired count is within the acceptable range
+  ScaledToZero    False   NotScaledToZero     the HPA controller did not scale the workload to zero
+Events:
+  Type     Reason                        Age                    From                       Message
+  ----     ------                        ----                   ----                       -------
+  Warning  FailedGetResourceMetric       9m33s (x4 over 10m)    horizontal-pod-autoscaler  failed to get cpu utilization: unable to get metrics for resource cpu: unable to fetch metrics from resource metrics API: the server is currently unable to handle the request (get pods.metrics.k8s.io)
+  Warning  FailedComputeMetricsReplicas  9m33s (x4 over 10m)    horizontal-pod-autoscaler  invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: unable to get metrics for resource cpu: unable to fetch metrics from resource metrics API: the server is currently unable to handle the request (get pods.metrics.k8s.io)
+  Warning  FailedGetResourceMetric       3m34s (x3 over 4m4s)   horizontal-pod-autoscaler  failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+  Warning  FailedComputeMetricsReplicas  3m34s (x3 over 4m4s)   horizontal-pod-autoscaler  invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+  Warning  FailedGetResourceMetric       2m35s (x4 over 3m19s)  horizontal-pod-autoscaler  failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+  Warning  FailedComputeMetricsReplicas  2m35s (x4 over 3m19s)  horizontal-pod-autoscaler  invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+  Normal   SuccessfulRescale             2m20s                  horizontal-pod-autoscaler  New size: 2; reason: cpu resource utilization (percentage of request) above target

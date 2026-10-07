@@ -1,0 +1,27 @@
+$ kubectl apply -f pv.yaml -f pvc.yaml -f pod.yaml
+persistentvolume/student-pv created
+persistentvolumeclaim/student-pvc created
+pod/storage-demo created
+
+$ kubectl get pv student-pv
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+student-pv   1Gi        RWO            Retain           Available                          <unset>                          6s
+
+$ kubectl get pvc student-pvc
+NAME          STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+student-pvc   Bound    pvc-59b3a37e-6a76-4562-aa74-4ec694baa6b5   500Mi      RWO            standard       <unset>                 6s
+
+$ kubectl describe pvc student-pvc | tail -5
+  Type    Reason                 Age   From                                                                    Message
+  ----    ------                 ----  ----                                                                    -------
+  Normal  ExternalProvisioning   6s    persistentvolume-controller                                             Waiting for a volume to be created either by the external provisioner 'k8s.io/minikube-hostpath' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+  Normal  Provisioning           6s    k8s.io/minikube-hostpath_minikube_9659f060-366b-4213-bf4c-970ddf241277  External provisioner is provisioning volume for claim "default/student-pvc"
+  Normal  ProvisioningSucceeded  6s    k8s.io/minikube-hostpath_minikube_9659f060-366b-4213-bf4c-970ddf241277  Successfully provisioned volume pvc-59b3a37e-6a76-4562-aa74-4ec694baa6b5
+
+$ kubectl get pv
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM                 STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+pvc-59b3a37e-6a76-4562-aa74-4ec694baa6b5   500Mi      RWO            Delete           Bound       default/student-pvc   standard       <unset>                          14s
+student-pv                                 1Gi        RWO            Retain           Available                                        <unset>                          14s
+
+$ kubectl exec storage-demo -- sh -c 'echo persisted > /data/file.txt && cat /data/file.txt'
+persisted

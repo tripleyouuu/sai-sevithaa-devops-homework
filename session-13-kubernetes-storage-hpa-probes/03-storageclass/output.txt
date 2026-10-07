@@ -1,0 +1,12 @@
+$ kubectl get storageclass
+NAME                 PROVISIONER                RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+standard (default)   k8s.io/minikube-hostpath   Delete          Immediate           false                  59m
+
+$ kubectl apply -f pvc.yaml
+persistentvolumeclaim/dynamic-pvc created
+
+$ kubectl get pvc dynamic-pvc
+NAME          STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+dynamic-pvc   Bound    pvc-2cdc29d9-a82e-4bf9-9a7f-6cd8e1e86ae8   500Mi      RWO            standard       <unset>                 5s
+
+--- dynamic provisioning: no PV existed beforehand, StorageClass's provisioner created one on demand ---

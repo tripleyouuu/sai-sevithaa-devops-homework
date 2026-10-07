@@ -1,0 +1,12 @@
+$ kubectl apply -f startup.yaml
+pod/startup-demo created
+
+$ kubectl get pod startup-demo
+NAME           READY   STATUS    RESTARTS   AGE
+startup-demo   1/1     Running   0          8s
+
+$ kubectl describe pod startup-demo | grep -A3 'Startup:\|Liveness:\|Readiness:'
+    Liveness:       http-get http://:80/ delay=0s timeout=1s period=5s successThreshold=1 failureThreshold=3
+    Readiness:      http-get http://:80/ delay=0s timeout=1s period=5s successThreshold=1 failureThreshold=3
+    Startup:        http-get http://:80/ delay=0s timeout=1s period=2s successThreshold=1 failureThreshold=30
+    Environment:    <none>

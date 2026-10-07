@@ -1,0 +1,15 @@
+$ POD_NAME=$(kubectl get pods -n production-webapp -l app=web-app -o jsonpath='{.items[0].metadata.name}')
+POD_NAME=web-app-d45775485-97jbd
+
+$ kubectl exec -n production-webapp $POD_NAME -- sh -c 'echo "Student: Vitha" > /data/student.txt'
+
+$ kubectl exec -n production-webapp $POD_NAME -- cat /data/student.txt
+Student: Vitha
+
+$ kubectl delete pod -n production-webapp $POD_NAME
+pod "web-app-d45775485-97jbd" deleted from production-webapp namespace
+
+$ NEW_POD=$(kubectl get pods -n production-webapp -l app=web-app -o jsonpath='{.items[0].metadata.name}')
+NEW_POD=web-app-d45775485-4hs5t
+$ kubectl exec -n production-webapp $NEW_POD -- cat /data/student.txt
+Student: Vitha

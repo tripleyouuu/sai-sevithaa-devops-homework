@@ -1,0 +1,33 @@
+$ kubectl apply -f readiness.yaml && kubectl expose pod readiness-demo --port=80 --name=readiness-demo-svc
+pod/readiness-demo created
+Error from server (AlreadyExists): services "readiness-demo-svc" already exists
+
+$ kubectl get pod readiness-demo
+NAME             READY   STATUS    RESTARTS   AGE
+readiness-demo   1/1     Running   0          10s
+$ kubectl get endpoints readiness-demo-svc
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                 ENDPOINTS         AGE
+readiness-demo-svc   10.244.0.104:80   40s
+
+--- break readiness WITHOUT crashing the process: hide index.html so GET / returns 404 ---
+$ kubectl exec readiness-demo -- mv /usr/share/nginx/html/index.html /usr/share/nginx/html/index.bak
+
+$ kubectl get pod readiness-demo   (expect 0/1 Running, RESTARTS still 0)
+NAME             READY   STATUS    RESTARTS   AGE
+readiness-demo   0/1     Running   0          28s
+
+$ kubectl get endpoints readiness-demo-svc   (expect: pod removed, <none>)
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                 ENDPOINTS   AGE
+readiness-demo-svc               58s
+
+--- restore and confirm it rejoins ---
+$ kubectl exec readiness-demo -- mv /usr/share/nginx/html/index.bak /usr/share/nginx/html/index.html
+$ kubectl get pod readiness-demo
+NAME             READY   STATUS    RESTARTS   AGE
+readiness-demo   1/1     Running   0          36s
+$ kubectl get endpoints readiness-demo-svc
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                 ENDPOINTS         AGE
+readiness-demo-svc   10.244.0.104:80   66s

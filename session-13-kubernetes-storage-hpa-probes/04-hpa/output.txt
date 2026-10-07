@@ -1,0 +1,29 @@
+$ kubectl apply -f deployment.yaml -f service.yaml -f hpa.yaml
+deployment.apps/hpa-demo created
+service/hpa-demo-service created
+horizontalpodautoscaler.autoscaling/hpa-demo created
+
+$ kubectl get hpa
+NAME       REFERENCE             TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+hpa-demo   Deployment/hpa-demo   cpu: <unknown>/50%   1         5         1          20s
+
+$ kubectl get pods -l app=hpa-demo
+NAME                        READY   STATUS    RESTARTS   AGE
+hpa-demo-5d6676989b-d46vv   1/1     Running   0          20s
+
+$ kubectl describe hpa hpa-demo | tail -15
+Metrics:                                               ( current / target )
+  resource cpu on pods  (as a percentage of request):  <unknown> / 50%
+Min replicas:                                          1
+Max replicas:                                          5
+Deployment pods:                                       1 current / 0 desired
+Conditions:
+  Type           Status  Reason                   Message
+  ----           ------  ------                   -------
+  AbleToScale    True    SucceededGetScale        the HPA controller was able to get the target's current scale
+  ScalingActive  False   FailedGetResourceMetric  the HPA was unable to compute the replica count: failed to get cpu utilization: unable to get metrics for resource cpu: unable to fetch metrics from resource metrics API: the server is currently unable to handle the request (get pods.metrics.k8s.io)
+Events:
+  Type     Reason                        Age               From                       Message
+  ----     ------                        ----              ----                       -------
+  Warning  FailedGetResourceMetric       5s (x2 over 20s)  horizontal-pod-autoscaler  failed to get cpu utilization: unable to get metrics for resource cpu: unable to fetch metrics from resource metrics API: the server is currently unable to handle the request (get pods.metrics.k8s.io)
+  Warning  FailedComputeMetricsReplicas  5s (x2 over 20s)  horizontal-pod-autoscaler  invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: unable to get metrics for resource cpu: unable to fetch metrics from resource metrics API: the server is currently unable to handle the request (get pods.metrics.k8s.io)

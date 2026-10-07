@@ -1,0 +1,88 @@
+=== t+1x20s ===
+Wed Oct  7 23:08:55 WITA 2026
+NAME                      CPU(cores)   MEMORY(bytes)   
+web-app-d45775485-4hs5t   2m           2Mi             
+web-app-d45775485-sk9tj   1m           2Mi             
+NAME          REFERENCE            TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: <unknown>/50%   2         5         2          53s
+NAME                      READY   STATUS    RESTARTS   AGE
+web-app-d45775485-4hs5t   1/1     Running   0          38s
+web-app-d45775485-sk9tj   1/1     Running   0          63s
+
+=== t+2x20s ===
+Wed Oct  7 23:09:15 WITA 2026
+NAME                      CPU(cores)   MEMORY(bytes)   
+web-app-d45775485-4hs5t   2m           2Mi             
+web-app-d45775485-sk9tj   1m           2Mi             
+NAME          REFERENCE            TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: <unknown>/50%   2         5         2          73s
+NAME                      READY   STATUS    RESTARTS   AGE
+web-app-d45775485-4hs5t   1/1     Running   0          58s
+web-app-d45775485-sk9tj   1/1     Running   0          83s
+
+=== t+3x20s ===
+Wed Oct  7 23:09:35 WITA 2026
+NAME                      CPU(cores)   MEMORY(bytes)   
+web-app-d45775485-4hs5t   2m           2Mi             
+web-app-d45775485-sk9tj   1m           2Mi             
+NAME          REFERENCE            TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: <unknown>/50%   2         5         2          94s
+NAME                      READY   STATUS    RESTARTS   AGE
+web-app-d45775485-4hs5t   1/1     Running   0          79s
+web-app-d45775485-sk9tj   1/1     Running   0          104s
+
+=== t+4x20s ===
+Wed Oct  7 23:09:56 WITA 2026
+NAME                      CPU(cores)   MEMORY(bytes)   
+web-app-d45775485-4hs5t   30m          2Mi             
+web-app-d45775485-sk9tj   28m          2Mi             
+NAME          REFERENCE            TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: <unknown>/50%   2         5         2          114s
+NAME                      READY   STATUS    RESTARTS   AGE
+web-app-d45775485-4hs5t   1/1     Running   0          99s
+web-app-d45775485-sk9tj   1/1     Running   0          2m4s
+
+=== t+5x20s ===
+Wed Oct  7 23:10:16 WITA 2026
+NAME                      CPU(cores)   MEMORY(bytes)   
+web-app-d45775485-4hs5t   30m          2Mi             
+web-app-d45775485-sk9tj   28m          2Mi             
+NAME          REFERENCE            TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: 29%/50%   2         5         2          2m14s
+NAME                      READY   STATUS    RESTARTS   AGE
+web-app-d45775485-4hs5t   1/1     Running   0          119s
+web-app-d45775485-sk9tj   1/1     Running   0          2m24s
+
+=== t+6x20s ===
+Wed Oct  7 23:10:36 WITA 2026
+NAME                      CPU(cores)   MEMORY(bytes)   
+web-app-d45775485-4hs5t   30m          2Mi             
+web-app-d45775485-sk9tj   28m          2Mi             
+NAME          REFERENCE            TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: 29%/50%   2         5         2          2m34s
+NAME                      READY   STATUS    RESTARTS   AGE
+web-app-d45775485-4hs5t   1/1     Running   0          2m19s
+web-app-d45775485-sk9tj   1/1     Running   0          2m44s
+
+=== t+7x20s ===
+Wed Oct  7 23:10:56 WITA 2026
+NAME                      CPU(cores)   MEMORY(bytes)   
+web-app-d45775485-4hs5t   7m           2Mi             
+web-app-d45775485-sk9tj   7m           2Mi             
+NAME          REFERENCE            TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: 29%/50%   2         5         2          2m55s
+NAME                      READY   STATUS    RESTARTS   AGE
+web-app-d45775485-4hs5t   1/1     Running   0          2m40s
+web-app-d45775485-sk9tj   1/1     Running   0          3m5s
+
+=== t+8x20s ===
+Wed Oct  7 23:11:16 WITA 2026
+NAME                      CPU(cores)   MEMORY(bytes)   
+web-app-d45775485-4hs5t   7m           2Mi             
+web-app-d45775485-sk9tj   7m           2Mi             
+NAME          REFERENCE            TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: 7%/50%   2         5         2          3m15s
+NAME                      READY   STATUS    RESTARTS   AGE
+web-app-d45775485-4hs5t   1/1     Running   0          3m
+web-app-d45775485-sk9tj   1/1     Running   0          3m25s
+

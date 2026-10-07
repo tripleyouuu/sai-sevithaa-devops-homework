@@ -1,0 +1,8 @@
+$ kubectl port-forward -n production-webapp svc/web-service 8101:80
+$ curl http://localhost:8101
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }

@@ -1,0 +1,21 @@
+$ kubectl apply -f namespace.yaml
+namespace/production-webapp created
+$ kubectl apply -f pvc.yaml
+persistentvolumeclaim/web-data created
+$ kubectl get pvc -n production-webapp
+NAME       STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+web-data   Bound    pvc-efc29e21-0e96-43e4-abe9-37f7abeadfb9   500Mi      RWO            standard       <unset>                 3s
+
+$ kubectl apply -f deployment.yaml -f service.yaml
+deployment.apps/web-app created
+service/web-service created
+$ kubectl get pods -n production-webapp
+NAME                      READY   STATUS    RESTARTS   AGE
+web-app-d45775485-97jbd   1/1     Running   0          10s
+web-app-d45775485-sk9tj   1/1     Running   0          10s
+
+$ kubectl apply -f hpa.yaml
+horizontalpodautoscaler.autoscaling/web-app-hpa created
+$ kubectl get hpa -n production-webapp
+NAME          REFERENCE            TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: <unknown>/50%   2         5         2          5s

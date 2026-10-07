@@ -1,0 +1,18 @@
+$ kubectl apply -f emptydir-pod.yaml -f hostpath-pod.yaml
+pod/emptydir-demo created
+pod/hostpath-demo created
+
+$ kubectl exec emptydir-demo -- sh -c 'echo hello > /data/file.txt && cat /data/file.txt'
+hello
+
+$ kubectl exec hostpath-demo -- sh -c 'echo world > /data/file.txt && cat /data/file.txt'
+world
+
+$ minikube ssh -- cat /tmp/hostpath-data/file.txt   (confirm it really landed on the node, not just in the container)
+world
+
+--- restart emptydir pod's container and confirm data is gone (emptyDir doesn't survive pod deletion) ---
+$ kubectl delete pod emptydir-demo && kubectl apply -f emptydir-pod.yaml
+pod "emptydir-demo" deleted from default namespace
+pod/emptydir-demo created
+$ kubectl exec emptydir-demo -- ls /data

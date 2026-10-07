@@ -1,0 +1,24 @@
+$ kubectl apply -f liveness.yaml
+pod/liveness-demo created
+
+$ kubectl get pod liveness-demo
+NAME            READY   STATUS    RESTARTS   AGE
+liveness-demo   1/1     Running   0          8s
+
+--- simulate the app hanging: kill nginx's master process inside the container ---
+$ kubectl exec liveness-demo -- nginx -s stop
+2026/10/07 15:04:46 [notice] 31#31: signal process started
+
+--- wait through failureThreshold (3) x periodSeconds (5) ~15-20s for kubelet to notice and restart ---
+$ kubectl get pod liveness-demo
+NAME            READY   STATUS    RESTARTS      AGE
+liveness-demo   1/1     Running   1 (25s ago)   33s
+
+$ kubectl describe pod liveness-demo | grep -A6 Events:
+Events:
+  Type    Reason     Age                From               Message
+  ----    ------     ----               ----               -------
+  Normal  Scheduled  33s                default-scheduler  Successfully assigned default/liveness-demo to minikube
+  Normal  Pulled     24s (x2 over 33s)  kubelet            spec.containers{nginx}: Container image "nginx:1.27" already present on machine and can be accessed by the pod
+  Normal  Created    24s (x2 over 33s)  kubelet            spec.containers{nginx}: Container created
+  Normal  Started    24s (x2 over 33s)  kubelet            spec.containers{nginx}: Container started
