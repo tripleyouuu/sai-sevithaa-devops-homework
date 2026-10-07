@@ -1,0 +1,20 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0
+rootdir: /Users/vitha/Desktop/sai-sevithaa-devops-homework/session-17-cicd-devsecops/demo
+configfile: pytest.ini
+testpaths: tests
+plugins: cov-6.0.0
+collected 8 items
+
+tests/test_app.py ........                                               [100%]
+
+---------- coverage: platform darwin, python 3.9.6-final-0 -----------
+Name              Stmts   Miss  Cover   Missing
+-----------------------------------------------
+app/__init__.py       0      0   100%
+app/app.py          102     32    69%   94, 104-105, 121, 128, 132-133, 145, 179-209, 225, 230, 234
+-----------------------------------------------
+TOTAL               102     32    69%
+
+
+============================== 8 passed in 0.23s ===============================
