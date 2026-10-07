@@ -1,0 +1,49 @@
+$ terraform init
+[0m[1mInitializing the backend...[0m
+
+[0m[1mInitializing provider plugins...[0m
+- Finding hashicorp/aws versions matching "~> 6.0"...
+- Installing hashicorp/aws v6.67.0...
+- Installed hashicorp/aws v6.67.0 (signed by HashiCorp)
+
+Terraform has created a lock file [1m.terraform.lock.hcl[0m to record the provider
+selections it made above. Include this file in your version control repository
+so that Terraform can guarantee to make the same selections by default when
+you run "terraform init" in the future.[0m
+
+[0m[1m[32mTerraform has been successfully initialized![0m[32m[0m
+[0m[32m
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.[0m
+
+$ terraform fmt
+
+$ terraform validate
+[32m[1mSuccess![0m The configuration is valid.
+[0m
+$ terraform plan
+
+[0m[1m[31mPlanning failed.[0m[1m Terraform encountered an error while generating this plan.[0m
+
+[0m[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mNo valid credential sources found[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  with provider["registry.terraform.io/hashicorp/aws"],
+[31m│[0m [0m  on providers.tf line 1, in provider "aws":
+[31m│[0m [0m   1: provider "aws" { [4mr[0megion = var.aws_region }[0m
+[31m│[0m [0m
+[31m│[0m [0mPlease see https://registry.terraform.io/providers/hashicorp/aws
+[31m│[0m [0mfor more information about providing credentials.
+[31m│[0m [0m
+[31m│[0m [0mError: failed to refresh cached credentials, no EC2 IMDS role found,
+[31m│[0m [0moperation error ec2imds: GetMetadata, exceeded maximum number of attempts,
+[31m│[0m [0m3, request send failed, Get
+[31m│[0m [0m"http://169.254.169.254/latest/meta-data/iam/security-credentials/": dial
+[31m│[0m [0mtcp 169.254.169.254:80: connect: no route to host
+[31m│[0m [0m
+[31m╵[0m[0m
