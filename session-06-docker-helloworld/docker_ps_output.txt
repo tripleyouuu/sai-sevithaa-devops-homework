@@ -1,0 +1,7 @@
+CONTAINER ID   IMAGE        COMMAND                  CREATED              STATUS              PORTS                                         NAMES
+5881a9809530   python-app   "python app.py"          About a minute ago   Up About a minute   0.0.0.0:5050->5000/tcp, [::]:5050->5000/tcp   python-app
+5d05e9e6cb36   nginx-app    "/docker-entrypoint.…"   About a minute ago   Up About a minute   0.0.0.0:8083->80/tcp, [::]:8083->80/tcp       nginx-app
+18077d56ddcd   react-app    "/docker-entrypoint.…"   About a minute ago   Up About a minute   0.0.0.0:8082->80/tcp, [::]:8082->80/tcp       react-app
+1acadbd0d466   apache-app   "httpd-foreground"       About a minute ago   Up About a minute   0.0.0.0:8081->80/tcp, [::]:8081->80/tcp       apache-app
+315de7d0a288   java-app     "/__cacert_entrypoin…"   About a minute ago   Up About a minute   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp   java-app
+40c4110ebe9a   nodejs-app   "docker-entrypoint.s…"   About a minute ago   Up About a minute   0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp   nodejs-app
