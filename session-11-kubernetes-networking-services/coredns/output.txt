@@ -1,0 +1,37 @@
+$ kubectl apply -f backend-deployment.yaml -f empty-endpoints.yaml -f curl-test-pod.yaml
+deployment.apps/yatri-backend created
+service/broken-backend-service created
+pod/curl-test-pod created
+
+--- TROUBLESHOOTING: broken-backend-service isn't reachable ---
+$ kubectl exec curl-test-pod -- curl -s --max-time 3 http://broken-backend-service/
+error: unable to upgrade connection: container not found ("curl-client")
+
+$ kubectl get endpoints broken-backend-service
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                     ENDPOINTS   AGE
+broken-backend-service   <none>      9s
+
+$ kubectl describe svc broken-backend-service | grep -i selector
+Selector:                 app=wrong-backend-name
+
+$ kubectl get pods --show-labels | grep yatri
+yatri-backend-dc5888c55-bj78d   0/1     ContainerCreating   0          9s    app=yatri-backend,pod-template-hash=dc5888c55,tier=api
+yatri-backend-dc5888c55-cgz2j   0/1     ContainerCreating   0          9s    app=yatri-backend,pod-template-hash=dc5888c55,tier=api
+yatri-backend-dc5888c55-rqmkv   0/1     ContainerCreating   0          9s    app=yatri-backend,pod-template-hash=dc5888c55,tier=api
+$ kubectl exec curl-test-pod -- curl -s --max-time 3 http://broken-backend-service/
+command terminated with exit code 7
+
+--- ROOT CAUSE confirmed: Service selector app=wrong-backend-name doesn't match pod label app=yatri-backend -> 0 endpoints ---
+
+--- FIX: patch the selector to match ---
+$ kubectl patch svc broken-backend-service -p '{"spec":{"selector":{"app":"yatri-backend"}}}'
+service/broken-backend-service patched
+
+$ kubectl get endpoints broken-backend-service
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                     ENDPOINTS                                            AGE
+broken-backend-service   10.244.0.69:5000,10.244.0.70:5000,10.244.0.71:5000   27s
+
+$ kubectl exec curl-test-pod -- curl -s http://broken-backend-service/
+Backend v1.0.0 listening on port 5000

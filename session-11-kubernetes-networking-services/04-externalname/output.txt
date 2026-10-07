@@ -1,0 +1,21 @@
+$ kubectl apply -f service.yaml -f client-pod.yaml
+service/external-database-service created
+pod/dns-test-client created
+
+$ kubectl exec dns-test-client -- nslookup external-database-service
+Server:		10.96.0.10
+Address:	10.96.0.10:53
+
+** server can't find external-database-service.cluster.local: NXDOMAIN
+
+** server can't find external-database-service.cluster.local: NXDOMAIN
+
+** server can't find external-database-service.svc.cluster.local: NXDOMAIN
+
+** server can't find external-database-service.svc.cluster.local: NXDOMAIN
+
+external-database-service.default.svc.cluster.local	canonical name = nencyravaliya.me
+
+external-database-service.default.svc.cluster.local	canonical name = nencyravaliya.me
+
+command terminated with exit code 1

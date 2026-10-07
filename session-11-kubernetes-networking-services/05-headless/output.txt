@@ -1,0 +1,52 @@
+$ kubectl apply -f app-statefulset.yaml -f service.yaml -f client-pod.yaml
+statefulset.apps/web-stateful created
+service/web-service-headless created
+pod/headless-dns-client created
+
+$ kubectl get pods -l app=web-headless
+NAME             READY   STATUS    RESTARTS   AGE
+web-stateful-0   1/1     Running   0          10s
+web-stateful-1   1/1     Running   0          10s
+web-stateful-2   1/1     Running   0          9s
+
+$ kubectl exec dns-test-client -- nslookup web-service-headless
+Error from server (NotFound): pods "dns-test-client" not found
+$ kubectl exec headless-dns-client -- nslookup web-service-headless
+Server:		10.96.0.10
+Address:	10.96.0.10:53
+
+Name:	web-service-headless.default.svc.cluster.local
+Address: 10.244.0.66
+Name:	web-service-headless.default.svc.cluster.local
+Address: 10.244.0.68
+Name:	web-service-headless.default.svc.cluster.local
+Address: 10.244.0.67
+
+** server can't find web-service-headless.svc.cluster.local: NXDOMAIN
+
+** server can't find web-service-headless.cluster.local: NXDOMAIN
+
+
+** server can't find web-service-headless.svc.cluster.local: NXDOMAIN
+
+** server can't find web-service-headless.cluster.local: NXDOMAIN
+
+command terminated with exit code 1
+
+$ kubectl exec headless-dns-client -- nslookup web-stateful-0.web-service-headless
+Server:		10.96.0.10
+Address:	10.96.0.10:53
+
+Non-authoritative answer:
+
+** server can't find web-stateful-0.web-service-headless: NXDOMAIN
+
+command terminated with exit code 1
+$ kubectl exec headless-dns-client -- nslookup web-stateful-0.web-service-headless.default.svc.cluster.local
+Server:		10.96.0.10
+Address:	10.96.0.10:53
+
+
+Name:	web-stateful-0.web-service-headless.default.svc.cluster.local
+Address: 10.244.0.66
+

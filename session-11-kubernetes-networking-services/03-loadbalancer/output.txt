@@ -1,0 +1,14 @@
+$ kubectl apply -f app-deployment.yaml -f service.yaml
+deployment.apps/web-app-loadbalancer created
+service/web-service-loadbalancer created
+
+$ kubectl get svc web-service-loadbalancer
+NAME                       TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+web-service-loadbalancer   LoadBalancer   10.103.53.206   <pending>     80:32211/TCP   8s
+--- EXTERNAL-IP stays <pending> because Minikube needs 'minikube tunnel' (requires interactive sudo) to simulate a cloud load balancer; this is expected on a local cluster, not an error ---
+$ kubectl port-forward svc/web-service-loadbalancer 8099:80
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>

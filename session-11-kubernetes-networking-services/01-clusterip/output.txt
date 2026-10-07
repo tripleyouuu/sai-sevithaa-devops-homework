@@ -1,0 +1,20 @@
+$ kubectl apply -f app-deployment.yaml -f service.yaml -f client-pod.yaml
+deployment.apps/web-app-clusterip created
+service/web-service-clusterip created
+pod/curl-client created
+
+$ kubectl get svc web-service-clusterip
+NAME                    TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+web-service-clusterip   ClusterIP   10.102.196.5   <none>        8080/TCP   8s
+
+$ kubectl exec curl-client -- curl -s http://web-service-clusterip:8080/ | head -5
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+
+$ kubectl get endpoints web-service-clusterip
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                    ENDPOINTS                                      AGE
+web-service-clusterip   10.244.0.55:80,10.244.0.57:80,10.244.0.58:80   8s

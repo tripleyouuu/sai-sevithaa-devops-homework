@@ -1,0 +1,17 @@
+$ kubectl apply -f app-deployment.yaml -f service.yaml
+deployment.apps/web-app-nodeport created
+service/web-service-nodeport created
+
+$ kubectl get svc web-service-nodeport
+NAME                   TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+web-service-nodeport   NodePort   10.96.162.37   <none>        80:30080/TCP   8s
+
+$ minikube ip
+192.168.49.2
+--- direct NodePort access (192.168.49.2:30080) times out through the Docker/Colima driver on macOS, same as noted in session 9 ---
+$ kubectl port-forward svc/web-service-nodeport 8098:80
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
