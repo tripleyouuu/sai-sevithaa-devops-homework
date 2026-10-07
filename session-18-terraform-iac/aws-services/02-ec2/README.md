@@ -1,76 +1,19 @@
-# EC2 — Elastic Compute Cloud
+# EC2
 
-## What is EC2?
+**What it is** — rent a VM by the second, choose CPU/memory/storage/OS, full root access. The building block most other compute services (EKS nodes, RDS, Elastic Beanstalk) sit on top of.
 
-EC2 is AWS's core virtual machine service — rent a server by the second,
-choose its CPU/memory/storage/OS, and have full root access to it. It's
-the building block most other "compute" services (EKS worker nodes, RDS
-under the hood, Elastic Beanstalk) are ultimately built on top of.
+**AMI** — the template an instance boots from: OS, pre-installed software, block device mappings. From AWS, an OS vendor, or your own custom one.
 
-## AMI (Amazon Machine Image)
+**Instance types** — `<family><gen>.<size>`, e.g. `t3.micro`, `m6g.large`. `t` = burstable general-purpose, `m` = balanced, `c` = compute-optimized, `r` = memory-optimized, `g` = GPU. Size scales vCPU/RAM within a family.
 
-An AMI is a snapshot template an EC2 instance boots from — OS, any
-pre-installed software, and block device mappings. AWS, the OS vendor
-(Ubuntu, Amazon Linux), or you yourself can supply one. Launching 50
-identical instances from the same custom AMI is how fleets get built
-consistently without manual setup.
+**Key pairs** — SSH keypair; AWS injects the public half into `~/.ssh/authorized_keys` at boot, you keep the private half. Lose it and there's no reset — you'd detach the root volume onto another instance to recover, or just relaunch.
 
-## Instance types
+**Security Groups** — stateful, instance-level firewall, allow rules only (no explicit deny). A response to an allowed inbound request is auto-allowed back out, no matching outbound rule needed.
 
-Named `<family><generation>.<size>` — e.g. `t3.micro`, `m6g.large`,
-`c7g.xlarge`. The family letter signals the trade-off: `t` = burstable/
-general-purpose (what this course's free-tier sessions use), `m` =
-balanced, `c` = compute-optimized, `r` = memory-optimized, `g` = GPU. Size
-(`micro` → `2xlarge` → ...) scales vCPU/RAM roughly linearly within a
-family.
+**EBS** — network-attached block storage, persists independently of the instance (unlike instance store, which gets wiped on stop/termination). Snapshots to S3, can be detached and reattached elsewhere.
 
-## Key pairs
+**Public vs private IP** — private IP is always present, from the subnet CIDR. Public IP is optional, routable via the Internet Gateway; an auto-assigned one changes on stop/start, an Elastic IP is static (and billed if not attached to a running instance).
 
-An EC2 key pair is an SSH public/private key pair — AWS stores the public
-half and injects it into the instance's `~/.ssh/authorized_keys` at boot;
-you keep the private half locally to SSH in. Lose the private key and
-there's no "reset password" — you'd need to detach the root volume onto
-another instance to recover access, or just terminate and relaunch.
+**Lifecycle** — `pending` → `running` → (`stopping`/`stopped`/`pending`/`running`, repeatable) → `shutting-down` → `terminated`. Stopping keeps the EBS root volume; terminating deletes it by default.
 
-## Security Groups
-
-A stateful, instance-level virtual firewall — a set of allow rules (no
-explicit deny rules exist; everything not allowed is implicitly denied).
-"Stateful" means a response to an allowed inbound request is automatically
-allowed back out, without needing a matching outbound rule. Multiple
-security groups can attach to one instance; their rules are additive.
-
-## EBS (Elastic Block Store)
-
-Network-attached block storage that an EC2 instance mounts as a regular
-disk — persists independently of the instance's lifecycle (unlike
-`instance store`, which is physically attached and wiped on stop/
-termination). Supports point-in-time snapshots to S3, and can be detached
-from one instance and reattached to another.
-
-## Public vs private IP
-
-- **Private IP**: assigned from the VPC's subnet CIDR, always present,
-  used for in-VPC communication.
-- **Public IP**: optionally assigned (auto-assign setting or an Elastic
-  IP), routable from the internet via the VPC's Internet Gateway. An
-  auto-assigned public IP changes if the instance stops/starts; an
-  **Elastic IP** is a static public IP you reserve and keep across
-  restarts (and get billed for if it's not attached to a running
-  instance).
-
-## Instance lifecycle
-
-`pending` → `running` → (`stopping` → `stopped` → `pending` → `running`,
-repeatable) → `shutting-down` → `terminated`. Stopping preserves EBS-backed
-root volumes (and their data) and just deallocates compute; terminating
-deletes the instance and, by default, its root EBS volume (configurable
-per-volume with "delete on termination").
-
-## Common use cases
-
-- Hosting the application layer behind a load balancer.
-- Self-hosted CI/CD runners.
-- The compute nodes behind a Kubernetes cluster (EKS worker nodes) — the
-  same EC2 primitives (AMI, security groups, instance types) this course's
-  Session 19 Terraform project provisions directly.
+**Use cases** — app layer behind a load balancer, self-hosted CI runners, Kubernetes worker nodes (EKS) — same AMI/security-group/instance-type primitives Session 19's Terraform project provisions directly.
