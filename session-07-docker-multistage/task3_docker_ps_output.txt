@@ -1,0 +1,5 @@
+CONTAINER ID   IMAGE            COMMAND                  CREATED          STATUS          PORTS                                         NAMES
+a21b8c5cf2ae   java-app         "/__cacert_entrypoin…"   7 seconds ago    Up 7 seconds    0.0.0.0:8001->8000/tcp, [::]:8001->8000/tcp   task3-java
+b88b881b5893   python-app       "python app.py"          7 seconds ago    Up 7 seconds    0.0.0.0:5051->5000/tcp, [::]:5051->5000/tcp   task3-python
+bd65c29bc4f6   nodejs-app       "docker-entrypoint.s…"   7 seconds ago    Up 7 seconds    0.0.0.0:3001->3000/tcp, [::]:3001->3000/tcp   task3-nodejs
+03b5d2e42566   multistage-app   "docker-entrypoint.s…"   25 seconds ago   Up 24 seconds   0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp   multistage-app
