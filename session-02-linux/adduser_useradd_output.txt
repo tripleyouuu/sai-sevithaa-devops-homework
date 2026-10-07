@@ -1,0 +1,9 @@
+=== useradd ===
+testuser1:x:1000:1000::/home/testuser1:/bin/sh
+testuser1
+testuser2
+
+=== adduser --disabled-password --gecos "" testuser2 ===
+testuser2:x:1001:1001:,,,:/home/testuser2:/bin/bash
+testuser1
+testuser2

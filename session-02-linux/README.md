@@ -45,26 +45,68 @@ pointer to a path (breaks if the path goes away). Use hard links rarely
 (mostly historical/dedup use cases); symlinks are the common one, e.g.
 `/usr/bin/python3 -> python3.11`."
 
-## Task 2: adduser vs useradd — BLOCKED
+## Task 2: adduser vs useradd
 
-Needs a real Linux box — macOS has neither command (it manages users via
-`dscl`/System Settings instead). `useradd` is a low-level binary (no home
-dir, no shell prompt, no password by default unless flagged); `adduser` is
-Debian/Ubuntu's higher-level Perl script that wraps `useradd` and
-interactively creates the home directory, copies `/etc/skel`, sets a
-password, and asks for user info — which is why Ubuntu's own docs recommend
-`adduser` for interactive use. Will run for real once Docker/Colima is
-available (planned: `docker run -it ubuntu bash`, then `useradd -m testuser1`
-vs `adduser testuser2`, comparing `/etc/passwd` and `/home`).
+Run inside a real systemd-enabled Ubuntu 22.04 container
+(`geerlingguy/docker-ubuntu2204-ansible`, started `--privileged` with
+cgroups mounted, since plain Docker containers have no init system and a
+bare `ubuntu` image can't run `adduser`'s dependencies properly).
 
-## Task 3: journalctl — BLOCKED
+```
+$ useradd -m testuser1
+exit code: 0
+testuser1:x:1000:1000::/home/testuser1:/bin/sh
 
-Needs `systemd`, which doesn't exist on macOS (or in a plain Docker
-container without an init system — this one specifically needs a full
-Ubuntu VM/systemd setup, e.g. via Minikube's underlying VM or a proper
-`systemd`-enabled container). Will document `journalctl --no-pager`,
-`journalctl -u <service>`, `journalctl --since "1 hour ago"`, and
-`journalctl -p err` once that environment is available.
+$ adduser --disabled-password --gecos "" testuser2
+Adding user `testuser2' ...
+Adding new group `testuser2' (1001) ...
+Adding new user `testuser2' (1001) with group `testuser2' ...
+Creating home directory `/home/testuser2' ...
+Copying files from `/etc/skel' ...
+exit code: 0
+testuser2:x:1001:1001:,,,:/home/testuser2:/bin/bash
+```
+
+**The difference, confirmed by the output above:**
+- `useradd -m testuser1` created the user and home directory but gave it
+  `/bin/sh` as its shell and didn't touch `/etc/skel` — it's a minimal,
+  low-level tool that does exactly what you ask and nothing more.
+- `adduser testuser2` created a matching group, copied the standard skeleton
+  files from `/etc/skel` into the new home directory, and set `/bin/bash` as
+  the shell — all without being asked. It's Debian/Ubuntu's friendlier Perl
+  wrapper around `useradd`, which is why Ubuntu's own docs recommend it for
+  interactive/manual user creation, while `useradd` is more common in
+  scripts where every behavior should be explicit.
+
+Full transcript: [`adduser_useradd_output.txt`](adduser_useradd_output.txt)
+
+## Task 3: journalctl
+
+Same systemd-enabled container.
+
+```
+$ journalctl --no-pager | head -15
+Oct 07 13:45:59 45fabff7f0a2 kernel: Booting Linux on physical CPU 0x0000000000 [0x610f0000]
+Oct 07 13:45:59 45fabff7f0a2 kernel: Linux version 6.8.0-117-generic ...
+...
+```
+
+```
+$ journalctl -u systemd-resolved --no-pager
+Oct 07 13:45:59 45fabff7f0a2 systemd[1]: Starting Network Name Resolution...
+Oct 07 13:45:59 45fabff7f0a2 systemd-resolved[40]: Positive Trust Anchors:
+...
+Oct 07 13:45:59 45fabff7f0a2 systemd[1]: Started Network Name Resolution.
+```
+
+`journalctl` is systemd's unified log viewer — it reads the binary journal
+that `systemd-journald` writes, replacing the older plain-text
+`/var/log/*.log` approach. `journalctl -u <unit>` filters to one service's
+logs (useful for "why did nginx just restart"), `--since` filters by time
+window, and `-p err` filters by priority level (`emerg` through `debug`) —
+handy for scanning straight to failures without reading everything.
+
+Full transcript: [`journalctl_unit_output.txt`](journalctl_unit_output.txt)
 
 ## Task 4: Linux Command Cheat Sheet
 
@@ -93,6 +135,4 @@ self-explanatory (`cp src dst`, `rm file`, `chown user:group file`,
 
 ## Status
 
-Tasks 1 and 4 complete. Tasks 2 and 3 are blocked on Docker/Colima being
-installed (see root `ACTION_PLAN.md` Phase 0) — will complete as soon as
-that's available.
+All 4 tasks complete.
